@@ -66,7 +66,7 @@ def integrate_system(ions_inside_init, ions_outside_concentration, g, A, C, X_am
     #return ions_over_time, V_t, ions_over_time_C
     return ions_over_time, V_t
 
-def integrate_system_RK(ions_inside_init, ions_outside_concentration, g, A, C, X_amount, K_i_amount, r_vesicle, t_axis):
+def integrate_system_RK4(ions_inside_init, ions_outside_concentration, g, A, C, X_amount, K_i_amount, r_vesicle, t_axis):
 
     num_ionic_species = ions_inside_init.shape[0]
     ions_over_time = np.zeros( (len(t_axis), num_ionic_species) )
@@ -84,23 +84,18 @@ def integrate_system_RK(ions_inside_init, ions_outside_concentration, g, A, C, X
     # integrate the system of equations
     for t in range(1,len(t_axis)):
 
-        dIons_dt = compute_flows(ions_over_time[t-1,:], ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount) # get the derivative (flow)
-        
-        k1 = dIons_dt*t_axis[t]
+        k1 = compute_flows(ions_over_time[t-1,:], ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount) # get the derivative (flow)
 
-        dIons_dt2 = compute_flows((ions_over_time[t-1,:]+(dt*(k1/2))), ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount) # get the derivative (flow)
+        k2 = compute_flows((ions_over_time[t-1,:]+(dt*(k1/2))), ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount)
 
-        k2 = dIons_dt2*(t_axis[t]+dt/2)
-        
-        dIons_dt3 = compute_flows((ions_over_time[t-1,:]+(dt*(k2/2))), ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount) # get the derivative (flow)
-        
-        k3 = dIons_dt3*(t_axis[t]+dt/2)
+        k3 = compute_flows((ions_over_time[t-1,:]+(dt*(k2/2))), ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount) # get the derivative (flow)
 
-        dIons_dt4 = compute_flows((ions_over_time[t-1,:]+(dt*k3)), ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount) # get the derivative (flow)
+        k4 = compute_flows((ions_over_time[t-1,:]+(dt*k3)), ions_outside_concentration, g, V_t[t-1], A, C, X_amount, K_i_amount) # get the derivative (flow)
 
-        k4 = dIons_dt4*(t_axis[t]+dt)
+        RK4_flow = ((k1 + 2*k2 + 2*k3 + k4) ) / 6.0
 
-        ions_over_time[t, :] = ions_over_time[t-1, :] + (1.0 / 6.0)*(k1 + 2 * k2 + 2 * k3 + k4) 
+        ions_over_time[t, :] = ions_over_time[t-1, :] + dt * RK4_flow
+
         cl_i_amount, na_i_amount = ions_over_time[t, 0], ions_over_time[t, 1] # extract the ionic amounts you just updated 
         V_t[t] = (V0*(cl_i_amount+na_i_amount+K_i_amount+X_amount)) / initial_total_amount # use them to update the volume of the vesicle at time t
     

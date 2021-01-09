@@ -7,7 +7,7 @@ from mp_model import ode_tools
 # %% initialise my system with desired conditions
 number_of_ions=3
 T = 100 # length of simulation in seconds
-dt = 0.001 # duration of integration window
+dt = 0.01 # duration of integration window
 t_axis = np.arange(0,T,dt)
 F = 96485.0 # Faraday constant
 
@@ -84,14 +84,19 @@ conductances[2] = G_k
 conductances[3] = G_CLC
 conductances[4] = G_NHE
 
-ion_amounts_over_time, volume_over_time = ode_tools.integrate_system(ions_i_amount, ions_o_concentration, conductances, A, C, X_amount, K_i_amount, r, t_axis)
+ion_amounts_over_time_Euler, volume_over_time_Euler = ode_tools.integrate_system(ions_i_amount, ions_o_concentration, conductances, A, C, X_amount, K_i_amount, r, t_axis)
+ion_amounts_over_time_RK4, volume_over_time_RK4 = ode_tools.integrate_system_RK4(ions_i_amount, ions_o_concentration, conductances, A, C, X_amount, K_i_amount, r, t_axis)
 
-print("Success!")
-# ion_concentrations_over_time = ion_amounts_over_time / (volume_over_time *1000).reshape(-1,1)
+ion_concentrations_over_time_Euler = ion_amounts_over_time_Euler / (volume_over_time_Euler *1000).reshape(-1,1)
+ion_concentrations_over_time_RK4 = ion_amounts_over_time_RK4 / (volume_over_time_RK4 *1000).reshape(-1,1)
 
-# pH_over_time = -np.log10(ion_concentrations_over_time[:,2]*3.0*1e-5)
-# Q = (ion_amounts_over_time[:,1] + K_i_amount + ion_amounts_over_time[:,2] - ion_amounts_over_time[:,0] + X_amount) * F
-# U_over_time = Q / C
+pH_over_time_Euler = -np.log10(ion_concentrations_over_time_Euler[:,2]*3.0*1e-5)
+Q = (ion_amounts_over_time_Euler[:,1] + K_i_amount + ion_amounts_over_time_Euler[:,2] - ion_amounts_over_time_Euler[:,0] + X_amount) * F
+U_over_time_Euler = Q / C
+
+pH_over_time_RK4 = -np.log10(ion_concentrations_over_time_RK4[:,2]*3.0*1e-5)
+Q = (ion_amounts_over_time_RK4[:,1] + K_i_amount + ion_amounts_over_time_RK4[:,2] - ion_amounts_over_time_RK4[:,0] + X_amount) * F
+U_over_time_RK4 = Q / C
 
 # pH_over_time=np.zeros(len(ion_concentrations_over_time))
 # for i in range(len(ion_concentrations_over_time)):
@@ -104,31 +109,44 @@ print("Success!")
 
 
 # %% Plotting
-# fig,axes = plt.subplots(3,3, figsize = (15,15), sharex = True)
+fig,axes = plt.subplots(3,3, figsize = (15,15), sharex = True, sharey = False)
 
-# axes[0,0].plot(t_axis,ion_concentrations_over_time[:,0])
-# axes[0,0].set_title('Cloride concentration')
-# axes[0,1].plot(t_axis,ion_concentrations_over_time[:,1])
-# axes[0,1].set_title('Sodium concentration')
-# axes[0,2].plot(t_axis,ion_concentrations_over_time[:,2])
-# axes[0,2].set_title('Hydrogen concentration')
-# axes[1,0].plot(t_axis,ion_amounts_over_time[:,0])
-# axes[1,0].set_title('Cloride amounts')
-# axes[1,1].plot(t_axis,ion_amounts_over_time[:,1])
-# axes[1,1].set_title('Sodium amounts')
-# axes[1,2].plot(t_axis,ion_amounts_over_time[:,2])
-# axes[1,2].set_title('Hydrogen amounts')
-# axes[2,0].plot(t_axis,pH_over_time)
-# axes[2,0].set_title('pH')
-# axes[2,1].plot(t_axis,volume_over_time)
-# axes[2,1].set_title('Volume')
-# axes[2,2].plot(t_axis,U_over_time)
-# axes[2,2].set_title('Membrane potential')
-# plt.subplots_adjust(wspace=None, hspace=None)
+# first row
+axes[0,0].plot(t_axis,ion_concentrations_over_time_Euler[:,0], t_axis, ion_concentrations_over_time_RK4[:,0])
+axes[0,0].set_title('Cloride concentration')
 
-# for ax in fig.get_axes():
-#     ax.label_outer()
+axes[0,1].plot(t_axis,ion_concentrations_over_time_Euler[:,1], t_axis, ion_concentrations_over_time_RK4[:,1])
+axes[0,1].set_title('Sodium concentration')
 
+axes[0,2].plot(t_axis,ion_concentrations_over_time_Euler[:,2], t_axis, ion_concentrations_over_time_RK4[:,2])
+axes[0,2].set_title('Hydrogen concentration')
+
+# second row
+axes[1,0].plot(t_axis,ion_amounts_over_time_Euler[:,0], t_axis, ion_amounts_over_time_RK4[:,0])
+axes[1,0].set_title('Cloride amounts')
+
+axes[1,1].plot(t_axis,ion_amounts_over_time_Euler[:,1], t_axis, ion_amounts_over_time_RK4[:,1])
+axes[1,1].set_title('Sodium amounts')
+
+axes[1,2].plot(t_axis,ion_amounts_over_time_Euler[:,2], t_axis, ion_amounts_over_time_RK4[:,2])
+axes[1,2].set_title('Hydrogen amounts')
+
+# third row
+axes[2,0].plot(t_axis,pH_over_time_Euler, t_axis, pH_over_time_RK4)
+axes[2,0].set_title('pH')
+
+axes[2,1].plot(t_axis,volume_over_time_Euler, t_axis, volume_over_time_RK4)
+axes[2,1].set_title('Volume')
+
+axes[2,2].plot(t_axis,U_over_time_Euler, t_axis, U_over_time_RK4)
+axes[2,2].set_title('Membrane potential')
+
+plt.subplots_adjust(wspace=None, hspace=None)
+
+for ax in fig.get_axes():
+    ax.label_outer()
+
+# plt.savefig('figures/test.png', dpi=300, bbox_inches='tight')
 # %% Plotting
 
 # plt.plot(t_axis,ion_concentrations_over_time[:,0],label='Cloride concentration')
@@ -163,7 +181,7 @@ print("Success!")
 # plt.legend()
 # plt.show()
 
-# plt.plot(t_axis,U_over_time,label='Membrane potential')
+# plt.plot(t_axis[0:1000],U_over_time[0:1000],label='Membrane potential')
 # #plt.ylim(0.02, 0.06)
 # plt.legend()
 # plt.show()

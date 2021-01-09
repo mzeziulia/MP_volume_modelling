@@ -2,7 +2,7 @@
 # %%
 import numpy as np
 import matplotlib.pyplot as plt
-from mps_modelling import ode_tools
+from mp_model import ode_tools
 
 # %% initialise my system with desired conditions
 number_of_ions=3
@@ -86,11 +86,12 @@ conductances[4] = G_NHE
 
 ion_amounts_over_time, volume_over_time = ode_tools.integrate_system(ions_i_amount, ions_o_concentration, conductances, A, C, X_amount, K_i_amount, r, t_axis)
 
-ion_concentrations_over_time = ion_amounts_over_time / (volume_over_time *1000).reshape(-1,1)
+print("Success!")
+# ion_concentrations_over_time = ion_amounts_over_time / (volume_over_time *1000).reshape(-1,1)
 
-pH_over_time = -np.log10(ion_concentrations_over_time[:,2]*3.0*1e-5)
-Q = (ion_amounts_over_time[:,1] + K_i_amount + ion_amounts_over_time[:,2] - ion_amounts_over_time[:,0] + X_amount) * F
-U_over_time = Q / C
+# pH_over_time = -np.log10(ion_concentrations_over_time[:,2]*3.0*1e-5)
+# Q = (ion_amounts_over_time[:,1] + K_i_amount + ion_amounts_over_time[:,2] - ion_amounts_over_time[:,0] + X_amount) * F
+# U_over_time = Q / C
 
 # pH_over_time=np.zeros(len(ion_concentrations_over_time))
 # for i in range(len(ion_concentrations_over_time)):
@@ -103,66 +104,66 @@ U_over_time = Q / C
 
 
 # %% Plotting
-fig,axes = plt.subplots(3,3, figsize = (15,15), sharex = True)
+# fig,axes = plt.subplots(3,3, figsize = (15,15), sharex = True)
 
-axes[0,0].plot(t_axis,ion_concentrations_over_time[:,0])
-axes[0,0].set_title('Cloride concentration')
-axes[0,1].plot(t_axis,ion_concentrations_over_time[:,1])
-axes[0,1].set_title('Sodium concentration')
-axes[0,2].plot(t_axis,ion_concentrations_over_time[:,2])
-axes[0,2].set_title('Hydrogen concentration')
-axes[1,0].plot(t_axis,ion_amounts_over_time[:,0])
-axes[1,0].set_title('Cloride amounts')
-axes[1,1].plot(t_axis,ion_amounts_over_time[:,1])
-axes[1,1].set_title('Sodium amounts')
-axes[1,2].plot(t_axis,ion_amounts_over_time[:,2])
-axes[1,2].set_title('Hydrogen amounts')
-axes[2,0].plot(t_axis,pH_over_time)
-axes[2,0].set_title('pH')
-axes[2,1].plot(t_axis,volume_over_time)
-axes[2,1].set_title('Volume')
-axes[2,2].plot(t_axis,U_over_time)
-axes[2,2].set_title('Membrane potential')
-plt.subplots_adjust(wspace=None, hspace=None)
+# axes[0,0].plot(t_axis,ion_concentrations_over_time[:,0])
+# axes[0,0].set_title('Cloride concentration')
+# axes[0,1].plot(t_axis,ion_concentrations_over_time[:,1])
+# axes[0,1].set_title('Sodium concentration')
+# axes[0,2].plot(t_axis,ion_concentrations_over_time[:,2])
+# axes[0,2].set_title('Hydrogen concentration')
+# axes[1,0].plot(t_axis,ion_amounts_over_time[:,0])
+# axes[1,0].set_title('Cloride amounts')
+# axes[1,1].plot(t_axis,ion_amounts_over_time[:,1])
+# axes[1,1].set_title('Sodium amounts')
+# axes[1,2].plot(t_axis,ion_amounts_over_time[:,2])
+# axes[1,2].set_title('Hydrogen amounts')
+# axes[2,0].plot(t_axis,pH_over_time)
+# axes[2,0].set_title('pH')
+# axes[2,1].plot(t_axis,volume_over_time)
+# axes[2,1].set_title('Volume')
+# axes[2,2].plot(t_axis,U_over_time)
+# axes[2,2].set_title('Membrane potential')
+# plt.subplots_adjust(wspace=None, hspace=None)
 
 # for ax in fig.get_axes():
 #     ax.label_outer()
 
 # %% Plotting
 
-plt.plot(t_axis,ion_concentrations_over_time[:,0],label='Cloride concentration')
-plt.legend()
-plt.show()
+# plt.plot(t_axis,ion_concentrations_over_time[:,0],label='Cloride concentration')
+# plt.legend()
+# plt.show()
 
-plt.plot(t_axis,ion_concentrations_over_time[:,1],label='Sodium concentration')
-plt.legend()
-plt.show()
+# plt.plot(t_axis,ion_concentrations_over_time[:,1],label='Sodium concentration')
+# plt.legend()
+# plt.show()
 
-plt.plot(t_axis,ion_concentrations_over_time[:,2],label='Hydrogen concentration')
-plt.legend()
-plt.show()
+# plt.plot(t_axis,ion_concentrations_over_time[:,2],label='Hydrogen concentration')
+# plt.legend()
+# plt.show()
 
-plt.plot(t_axis,ion_amounts_over_time[:,0],label='Cloride amounts')
-plt.legend()
-plt.show()
+# plt.plot(t_axis,ion_amounts_over_time[:,0],label='Cloride amounts')
+# plt.legend()
+# plt.show()
 
-plt.plot(t_axis,ion_amounts_over_time[:,1],label='Sodium amounts')
-plt.legend()
-plt.show()
+# plt.plot(t_axis,ion_amounts_over_time[:,1],label='Sodium amounts')
+# plt.legend()
+# plt.show()
 
-plt.plot(t_axis,ion_amounts_over_time[:,2],label='Hydrogen amounts')
-plt.legend()
-plt.show()
+# plt.plot(t_axis,ion_amounts_over_time[:,2],label='Hydrogen amounts')
+# plt.legend()
+# plt.show()
 
-plt.plot(t_axis,pH_over_time,label='pH')
-plt.legend()
-plt.show() 
+# plt.plot(t_axis,pH_over_time,label='pH')
+# plt.legend()
+# plt.show() 
 
-plt.plot(t_axis,volume_over_time, label='Volume')
-plt.legend()
-plt.show()
+# plt.plot(t_axis,volume_over_time, label='Volume')
+# plt.legend()
+# plt.show()
 
-plt.plot(t_axis,U_over_time,label='Membrane potential')
-#plt.ylim(0.02, 0.06)
-plt.legend()
-plt.show()
+# plt.plot(t_axis,U_over_time,label='Membrane potential')
+# #plt.ylim(0.02, 0.06)
+# plt.legend()
+# plt.show()

@@ -86,17 +86,20 @@ conductances[4] = G_NHE
 
 ion_amounts_over_time, volume_over_time = ode_tools.integrate_system(ions_i_amount, ions_o_concentration, conductances, A, C, X_amount, K_i_amount, r, t_axis)
 
-
 ion_concentrations_over_time = ion_amounts_over_time / (volume_over_time *1000).reshape(-1,1)
 
-pH_over_time=np.zeros(len(ion_concentrations_over_time))
-for i in range(len(ion_concentrations_over_time)):
-    pH_over_time[i]=-np.log10(ion_concentrations_over_time[i, 2]*(3.0*1e-5))
+pH_over_time = -np.log10(ion_concentrations_over_time[:,2]*3.0*1e-5)
+Q = (ion_amounts_over_time[:,1] + K_i_amount + ion_amounts_over_time[:,2] - ion_amounts_over_time[:,0] + X_amount) * F
+U_over_time = Q / C
 
-U_over_time=np.zeros(len(ion_amounts_over_time))
-for i in range(len(ion_amounts_over_time)):
-    Q2 = (ion_amounts_over_time[i,1] +K_i_amount + ion_amounts_over_time[i,2] - ion_amounts_over_time[i,0] + X_amount) * F
-    U_over_time[i] = Q2 / C 
+# pH_over_time=np.zeros(len(ion_concentrations_over_time))
+# for i in range(len(ion_concentrations_over_time)):
+#     pH_over_time[i]=-np.log10(ion_concentrations_over_time[i, 2]*(3.0*1e-5))
+
+# U_over_time=np.zeros(len(ion_amounts_over_time))
+# for i in range(len(ion_amounts_over_time)):
+#     Q2 = (ion_amounts_over_time[i,1] +K_i_amount + ion_amounts_over_time[i,2] - ion_amounts_over_time[i,0] + X_amount) * F
+#     U_over_time[i] = Q2 / C 
 
 
 # %% Plotting

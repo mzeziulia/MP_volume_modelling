@@ -7,7 +7,7 @@ from mp_model import ode_tools
 # %% initialise my system with desired conditions
 number_of_ions=3
 T = 100 # length of simulation in seconds
-dt = 0.01 # duration of integration window
+dt = 0.001 # duration of integration window
 t_axis = np.arange(0,T,dt)
 F = 96485.0 # Faraday constant
 
@@ -75,7 +75,8 @@ conductances = np.zeros(5)
 #G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-7, 0, 0, 0, 0) # JUST ASOR
 #G_asor, G_tpc, G_k, G_CLC, G_NHE = (0, 0, 0, 1*1e-8, 0) # JUST CLC
 
-G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-6, 1*1e-6, 0, 1*1e-6, 1*1e-6) #ALL
+G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-6, 1*1e-6, 0, 1*1e-6, 1*1e-6) #my
+#G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-5, 1*1e-6, 0, 0, 1*1e-8) #from Thomas
 #G_asor, G_tpc, G_k, G_CLC, G_NHE = (0, 1*1e-6, 0, 1*1e-6, 1*1e-6) #ASOR KO
 
 conductances[0] = G_asor
@@ -102,10 +103,10 @@ U_over_time_RK4 = Q / C
 # for i in range(len(ion_concentrations_over_time)):
 #     pH_over_time[i]=-np.log10(ion_concentrations_over_time[i, 2]*(3.0*1e-5))
 
-# U_over_time=np.zeros(len(ion_amounts_over_time))
-# for i in range(len(ion_amounts_over_time)):
-#     Q2 = (ion_amounts_over_time[i,1] +K_i_amount + ion_amounts_over_time[i,2] - ion_amounts_over_time[i,0] + X_amount) * F
-#     U_over_time[i] = Q2 / C 
+U_over_time=np.zeros(len(ion_amounts_over_time))
+for i in range(len(ion_amounts_over_time)):
+    Q2 = (ion_amounts_over_time[i,1] + K_i_amount + ion_amounts_over_time[i,2] - ion_amounts_over_time[i,0] + X_amount) * F
+    U_over_time[i] = Q2 / C 
 
 
 # %% Plotting
@@ -143,8 +144,8 @@ axes[2,2].set_title('Membrane potential')
 
 plt.subplots_adjust(wspace=None, hspace=None)
 
-for ax in fig.get_axes():
-    ax.label_outer()
+# for ax in fig.get_axes():
+#     ax.label_outer()
 
 # plt.savefig('figures/test.png', dpi=300, bbox_inches='tight')
 # %% Plotting
@@ -185,3 +186,43 @@ for ax in fig.get_axes():
 # #plt.ylim(0.02, 0.06)
 # plt.legend()
 # plt.show()
+
+# %% Plot dependence functions
+from mp_model import v_dependence, pH_dependence
+
+pH_step=0.1
+pH_start=1
+pH_end=12
+voltage_step=5*1e-3
+voltage_start=-100*1e-3
+voltage_end=100*1e-3
+
+pH_axis = np.arange(pH_start, pH_end, pH_step)
+voltage_axis = np.arange(voltage_start, voltage_end, voltage_step)
+
+pH_values=np.zeros(len(pH_axis))
+U_values=np.zeros(len(voltage_axis))
+
+'''
+for i in range(len(pH_axis)):
+  h=10**(-pH_axis[i])
+  pH_values[i]=pH_dependence(h)
+  '''
+
+pH = pH_start
+for i in range(len(pH_axis)):
+  pH_values[i] = pH_dependence(10**(-pH))
+  pH = pH + pH_step
+
+for i in range(len(voltage_axis)):
+  U_values[i]=v_dependence(voltage_axis[i])
+
+fig,axes = plt.subplots(1,2, figsize = (10,5))
+
+axes[0].plot(pH_axis,pH_values)
+axes[0].set_title('pH_dependence')
+axes[1].plot(voltage_axis,U_values)
+axes[1].set_title('U_dependence')
+
+plt.subplots_adjust(wspace=None, hspace=None)
+

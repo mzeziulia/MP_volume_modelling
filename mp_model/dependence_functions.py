@@ -13,8 +13,8 @@ import numpy as np
 #     return 1.0 / (1.0 + np.exp(k2*(U - U_half)))
 
 ### NEW DEPENDENCY FUNCTIONS ###
-def pH_dependence_pH(h_prime):
-  pH=-np.log10(hprime_i)
+def pH_dependence(h_prime):
+  pH=-np.log10(h_prime)
   return 1.0 / (1.0 + np.exp(1.5*(pH-5.5)))
 
 def v_dependence(U, k2=80, U_half = -40*1e-3):

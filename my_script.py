@@ -75,8 +75,8 @@ conductances = np.zeros(5)
 #G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-7, 0, 0, 0, 0) # JUST ASOR
 #G_asor, G_tpc, G_k, G_CLC, G_NHE = (0, 0, 0, 1*1e-8, 0) # JUST CLC
 
-G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-6, 1*1e-6, 0, 1*1e-6, 1*1e-6) #my
-#G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-5, 1*1e-6, 0, 0, 1*1e-8) #from Thomas
+#G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-6, 1*1e-6, 0, 1*1e-6, 1*1e-6) #my
+G_asor, G_tpc, G_k, G_CLC, G_NHE = (1*1e-5, 1*1e-6, 0, 0, 1*1e-8) #from Thomas
 #G_asor, G_tpc, G_k, G_CLC, G_NHE = (0, 1*1e-6, 0, 1*1e-6, 1*1e-6) #ASOR KO
 
 conductances[0] = G_asor

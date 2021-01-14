@@ -19,7 +19,7 @@ def compute_Na_flux(U, Na_outside, Na_inside, Hprime_inside, Hprime_outside, g_T
 
 def compute_H_flux(U, Cl_inside, Cl_outside, Hprime_inside, Hprime_outside, Na_outside, Na_inside, g_CLC, g_NHE, A):
 
-    CLC_flux = compute_CLC_flux(U, Cl_inside, Cl_outside, Hprime_inside, Hprime_outside, g_CLC, A, ion_type = 'H')
+    CLC_flux = compute_CLC_flux(U, Cl_outside, Cl_inside, g_CLC, Hprime_inside, Hprime_outside, A, ion_type = 'H')
     NHE_flux = compute_NHE_flux(Na_outside, Na_inside, Hprime_inside, Hprime_outside, g_NHE, A, ion_type = 'H')
 
     return CLC_flux + NHE_flux
@@ -32,7 +32,7 @@ def compute_ASOR_flux(U, Cl_outside, Cl_inside, g_ASOR, Hprime_inside, A):
 
     return fluxes.Cl_ASOR(ASOR_potential, g_ASOR, U, Hprime_inside, A)
 
-def compute_CLC_flux(U, Cl_outside, Cl_inside, g_CLC, Hprime_inside, Hprime_outside, A, ion_type='Cl'):
+def compute_CLC_flux(U, Cl_outside, Cl_inside, g_CLC, Hprime_inside, Hprime_outside, A, ion_type):
 
     CLC_potential = potentials.CLC(U, Cl_inside, Cl_outside, Hprime_inside, Hprime_outside)
 
@@ -51,7 +51,7 @@ def compute_TPC_flux(U, Na_outside, Na_inside, g_TPC, A):
 
     return fluxes.Na_TPC(TPC_potential, g_TPC, A)
 
-def compute_NHE_flux(Na_outside, Na_inside, Hprime_inside, Hprime_outside, g_NHE, A, ion_type = 'Na'):
+def compute_NHE_flux(Na_outside, Na_inside, Hprime_inside, Hprime_outside, g_NHE, A, ion_type):
 
     NHE_potential = potentials.NHE(Na_outside, Na_inside, Hprime_inside, Hprime_outside)
 

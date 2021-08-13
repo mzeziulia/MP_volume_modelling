@@ -361,6 +361,18 @@ H_FLUX_Cl_OH = np.zeros(len(t_axis)-1)
 H_FLUX_VATPase = np.zeros(len(t_axis)-1)
 H_FLUX_leak = np.zeros(len(t_axis)-1)
 
+# flux_histories = np.zeros((11, len(t_axis)-1))
+
+
+# flux_history['Cl_asor'] = np.zeros(len(t_axis)-1)
+# flux_histories[CL_asor_idx,t]
+
+# CL_asor_idx = 0
+# Cl_FLUX_CLC_idx = 1
+# na_FLUX_tpc_idx = 2
+
+Cl_FLUX_asor = my_big_array[CL_asor_idx, :]
+
 ASOR_pH_dep=np.zeros(len(t_axis))
 ASOR_voltage_dep=np.zeros(len(t_axis))
 ASOR_pH_dep[0]=pH_dependence_ASOR(pH_i)
@@ -385,7 +397,6 @@ buffer_over_time[0]=buffer_capacity_t0
 
 # integrate the system equations by looping over time 'by hand' rather than with ODEint
 
-run_simulation(T, initial_state, **parameters)
 for t in range(1,len(t_axis)):
 
   # the two lines below is what odeint() is doing anyway (probably with some extra numerical methods to reduce risk of numerical instabilities), but we have to do it by hand since our V[t] is not being solved via ODE-integration

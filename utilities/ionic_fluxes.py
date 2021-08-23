@@ -24,17 +24,9 @@ def J_Na_NHE(nhe_potential, g_nhe, Ar):
 
 def J_H_NHE(nhe_potential, g_nhe, Ar):
     return -nhe_potential * g_nhe * Ar
-  
-def J_Cl_OH(cl_oh_potential, g_cl_oh, Ar):
-    return cl_oh_potential * g_cl_oh * Ar
 
 def J_VATPase(VATPase_potential, g_VATPase, time, Ar):
     return -VATPase_potential * g_VATPase * F.g_VATP_dependence(time) * Ar
 
 def J_H_leak(n_potential_H, g_H_leak, Ar):
     return n_potential_H * g_H_leak * Ar
-
-"""Flux for function for individual ionic species"""
-
-def dI_dt(flux1, flux2):
-    return (flux1 + flux2)

@@ -14,9 +14,6 @@ def nernst_potential_CLC(U, Cl_i, Cl_o, hprime_i, hprime_o, RT = 2477.572, F = 9
 def potential_NHE(Na_o, Na_i, hprime_i, hprime_o):
     return  np.log( (Na_o/Na_i) * (hprime_i/hprime_o))
 
-def nernst_potential_Cl_OH(Cl_o, Cl_i, hprime_i, hprime_o):
-    return  np.log( (Cl_o/Cl_i) * (hprime_o/hprime_i))
-
 def nernst_potential_VATPase(U, ion_outside, ion_inside, RTdivF, U_ATP=0.27):
     return U - (RTdivF * np.log(ion_outside/ion_inside)) - U_ATP
 

@@ -1,4 +1,4 @@
-
+import numpy as np
 
 # mapping of chemicals to numerical indices used to index the state vectors
 Cl_idx = 0
@@ -53,4 +53,4 @@ internal_ions_amounts=[Cl_i_concentration*V0*1000,  Na_i_concentration*V0*1000, 
 external_ions_concentrations = [Cl_o_concentration, Na_o_concentration, htotal_o_concentration, K_o_concentration] # vector of concentrations of external ions
 internal_ions_concentrations = [Cl_i_concentration, Na_i_concentration, htotal_i_concentration, K_i_concentration] # vector of concentrations of internal ions
 
-Sum_initial_amounts = internal_ions[Cl_idx] + internal_ions[Na_idx] + abs(X_amount) + internal_ions[K_idx] # sum of amounts of all ions
+Sum_initial_amounts = internal_ions_amounts[Cl_idx] + internal_ions_amounts[Na_idx] + abs(X_amount) + internal_ions_amounts[K_idx] # sum of amounts of all ions

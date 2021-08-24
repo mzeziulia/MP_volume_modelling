@@ -1,23 +1,23 @@
 import numpy as np
-import nernst_potentials as P
-import ionic_fluxes as i_flux
-import dep_functions as F
+from utilities import nernst_potentials as P
+from utilities import ionic_fluxes as i_flux
+from utilities import dep_functions as F
 from config import *
 
 
 def compute_flows(time_step, 
     internal_ions, 
-    V_t,
-    G = G,
-    external_ions_concentrations = external_ions_concentrations,
-    A_from_V_const = A_from_V_const,
+    V,
+    G,
+    external_ions_concentrations,
+    A_from_V_const,
     X_amount = None,
     buffer_capacity_T0 = None, 
     V_t0 = None, 
     c_spec = None, 
     RT = 2578.5871, 
     F = 96485.0
-):
+): # I CHANGED HERE - HAVE A LOOK
     '''
     Arguments
     =============
@@ -64,20 +64,20 @@ def compute_flows(time_step,
 
     dIons_dt = np.zeros_like(internal_ions)
 
-    Buffer_T=buffer_capacity_T0*(V_t/V_t0) # Buffer capacity at the current time step
-    htotal_i = internal_ions[H_idx]/(V_t*1000) # Concentration (mol/l) of H (total) in MP from the amount (mol) 
+    Buffer_T=buffer_capacity_T0*(V/V_t0) # Buffer capacity at the current time step
+    htotal_i = internal_ions[H_idx]/(V*1000) # Concentration (mol/l) of H (total) in MP from the amount (mol) 
 
     hfree_o =  external_ions_concentrations[H_idx] * buffer_capacity_T0 # Free external H concentration (mol/l)
     hfree_i = htotal_i * Buffer_T # Free internal H concentration (mol/l)
 
-    A=A_from_V_const*(V_t**(2/3)) #Membrane area of the macropinosome at the current time step
+    A=A_from_V_const*(V**(2/3)) #Membrane area of the macropinosome at the current time step
     C=A*c_spec # Membrane capacitance 
     Q = (internal_ions[Na_idx] + internal_ions[K_idx] + internal_ions[H_idx] -  internal_ions[Cl_idx] + X_amount) * F # Total charge
     U = Q / C # Membrane potential
     
-    cl_i = internal_ions[Cl_idx]/(V_t*1000) # Internal Cl concentration in mol/l
-    na_i = internal_ions[Na_idx]/(V_t*1000) # Internal Na concentration in mol/l
-    k_i = internal_ions[K_idx]/(V_t*1000) # Internal K concentration in mol/l
+    cl_i = internal_ions[Cl_idx]/(V*1000) # Internal Cl concentration in mol/l
+    na_i = internal_ions[Na_idx]/(V*1000) # Internal Na concentration in mol/l
+    k_i = internal_ions[K_idx]/(V*1000) # Internal K concentration in mol/l
 
     pH_local=-np.log10(hfree_i) #pH inside of the macropinosome
 
@@ -96,9 +96,8 @@ def compute_flows(time_step,
     # Flow of chloride (d[Cl]/dt)
     Cl_flux_asor = i_flux.J_cl_asor(potential_asor, G['asor'], U, pH_local, A)
     Cl_flux_CLC = i_flux.J_Cl_CLC(potential_CLC, G['CLC'], U, pH_local, A )
-    Cl_flux_Cl_OH = i_flux.J_Cl_OH(potential_Cl_OH, G['Cl_OH'], A )
 
-    dIons_dt[0] = Cl_flux_asor + Cl_flux_CLC + Cl_flux_Cl_OH
+    dIons_dt[0] = Cl_flux_asor + Cl_flux_CLC
 
     # Flow of sodium (d[Na]/dt)
     na_flux_tpc = i_flux.J_na_tpc(n_potential_Na_TPC, G['tpc'], A)
@@ -157,24 +156,22 @@ def update_euler(past_state, int_step, derivative):
     """ Integrate ODE with simple Euler integration """
     return past_state + (int_step * derivative) # Euler integration i.e. x(t) = x(t-1) + (dt * dx(t)/dt)
 
-def run_simulation(initial_state, parameters):
+def run_simulation(initial_state_ions_amounts, parameters):
     """
-    Run simulation
     Arguments
     ==========
-    `initial state` [dict]:
-        `external_ions_concentrations` [1D np.ndarray]:
-        - vector of initial external ionic concentrations (in moles)
+    `initial state_ions_amounts` [1D np.ndarray]:
+        - vector of initial internal ionic amounts (in moles)
     `parameters` [dict]:
         - dictionary of simulation parameters, including the following key/value pairs:
-            'dt' [float]:
+            `dt` [float]:
                 - time step, seconds
-            'T' [float]:
+            `T` [float]:
                 - simulations length, seconds
-            'G' [dict]:
+            `G` [dict]:
                 - dictionary containing conductances for the following channel types:
                     - ASOR, ClC, TPC, NHE, vATPase, H leak, K channel
-            'external_ions_concentrations' [1D np.ndarray]:
+            `external_ions_concentrations` [1D np.ndarray]:
                 - external_ions_concentrations in M,
             `A_from_V_const` [float]
                 - area calculated from the volume
@@ -190,7 +187,16 @@ def run_simulation(initial_state, parameters):
                 - Faraday's constant 
 
     Returns
-    =======   
+    =======
+    `results` [dict]:
+        - dictionary of simulation outome
+            `internal_ions` [dict]:
+                - dictionary containing internal concentrations and amounts of Na, Cl, H and K ions throught simulation
+            `fluxes` [dict]:
+                - dictionary containing fluxes of Cl, Na, H and K ions through ASOR, CLC, NHE, vATPase, H_leak and K channels throught simulation
+            `other_variables` [dict]:
+                - dictionary containing information about dependency functions outcomes and variables regarding vesicle properties (pH, volume, membrane area, membrane capacitance and buffer capacity) throught simulation
+
     """
 
     ''' Initialize variables for the simulation '''
@@ -199,7 +205,7 @@ def run_simulation(initial_state, parameters):
     
     ''' Initialize arrays / dictionaries to store the histories of each variable-of-interest over time '''
     ions_t = np.empty((4, len(time_axis)))
-    ions_t[:,0] = internal_ions_amounts
+    ions_t[:,0] = initial_state_ions_amounts
 
     V_t = np.empty((1, len(time_axis)))
     V_t[0] = V0
@@ -226,15 +232,15 @@ def run_simulation(initial_state, parameters):
                             'buffer_capacity_t': np.zeros(len(time_axis))
                             }
 
-    dependency_histories['pH_ASOR'][0]=F.pH_dependence_ASOR(parameters['pH_i'])
-    dependency_histories['v_ASOR'][0]=F.v_dependence_ClC(parameters['U0'])
-    dependency_histories['pH_CLC'][0]=F.pH_dependence_ClC(parameters['pH_i'])
-    dependency_histories['v_CLC'][0]=F.v_dependence_ClC(parameters['U0'])
-    dependency_histories['t_vATPase'][0]=F.g_VATP_dependence(time_axis[0])
-    dependency_histories['pH_t'][0]=parameters['pH_i']
-    dependency_histories['A_t'][0]=parameters['A0']
-    dependency_histories['C_t'][0]=parameters['C0']
-    dependency_histories['buffer_capacity_t'][0]=parameters['buffer_capacity_t0']
+    dependency_histories['pH_ASOR'][0] = F.pH_dependence_ASOR(parameters['pH_i'])
+    dependency_histories['v_ASOR'][0] = F.v_dependence_ClC(parameters['U0'])
+    dependency_histories['pH_CLC'][0] = F.pH_dependence_ClC(parameters['pH_i'])
+    dependency_histories['v_CLC'][0] = F.v_dependence_ClC(parameters['U0'])
+    dependency_histories['t_vATPase'][0] = F.g_VATP_dependence(time_axis[0])
+    dependency_histories['pH_t'][0] = parameters['pH_i']
+    dependency_histories['A_t'][0] = parameters['A0']
+    dependency_histories['C_t'][0] = parameters['C0']
+    dependency_histories['buffer_capacity_t'][0] = parameters['buffer_capacity_t0']
 
     for t in range(1,len(time_axis)):
 
@@ -245,50 +251,49 @@ def run_simulation(initial_state, parameters):
         ions_t[t,:] = update_euler(ions_t[t-1,:], dt, dIons_dt)
 
         ''' store other relevant variables in history array '''
-        flux_history_dictionary['ClC_ASOR'] = fluxes['Cl_asor']
-        flux_history_dictionary['ClC_CLC'] = fluxes['Cl_CLC']
-        flux_history_dictionary['Na_TPC'] = fluxes['Na_tpc']
-        flux_history_dictionary['Na_NHE'] = fluxes['Na_nhe']
-        flux_history_dictionary['H_Cl'] = fluxes['H_CLC']
-        flux_history_dictionary['H_NHE'] = fluxes['H_NHE']
-        flux_history_dictionary['H_vATPase'] = fluxes['H_VATPase']
-        flux_history_dictionary['H_leak'] = fluxes['H_leak']
-        flux_history_dictionary['K'] = fluxes['K']
+        flux_history_dictionary['ClC_ASOR'][t-1] = fluxes['Cl_asor']
+        flux_history_dictionary['ClC_CLC'][t-1] = fluxes['Cl_CLC']
+        flux_history_dictionary['Na_TPC'][t-1] = fluxes['Na_tpc']
+        flux_history_dictionary['Na_NHE'][t-1] = fluxes['Na_nhe']
+        flux_history_dictionary['H_Cl'][t-1] = fluxes['H_CLC']
+        flux_history_dictionary['H_NHE'][t-1] = fluxes['H_NHE']
+        flux_history_dictionary['H_vATPase'][t-1] = fluxes['H_VATPase']
+        flux_history_dictionary['H_leak'][t-1] = fluxes['H_leak']
+        flux_history_dictionary['K'][t-1] = fluxes['K']
 
-        dependency_histories['pH_ASOR'] = deps['pH_ASOR']
-        dependency_histories['v_ASOR'] = deps['v_ASOR']
-        dependency_histories['pH_CLC'] = deps['pH_ClC']
-        dependency_histories['v_CLC'] = deps['v_ClC']
-        dependency_histories['t_vATPase'] = deps['t_VATPase']
-        dependency_histories['pH_t'] = local_vars['pH_local']
-        dependency_histories['A_t'] = local_vars['A']
-        dependency_histories['C_t'] = local_vars['C']
-        dependency_histories['buffer_capacity_t'] = local_vars['Buffer_T']
+        dependency_histories['pH_ASOR'][t] = deps['pH_ASOR']
+        dependency_histories['v_ASOR'][t] = deps['v_ASOR']
+        dependency_histories['pH_CLC'][t] = deps['pH_ClC']
+        dependency_histories['v_CLC'][t] = deps['v_ClC']
+        dependency_histories['t_vATPase'][t] = deps['t_VATPase']
+        dependency_histories['pH_t'][t] = local_vars['pH_local']
+        dependency_histories['A_t'][t] = local_vars['A']
+        dependency_histories['C_t'][t] = local_vars['C']
+        dependency_histories['buffer_capacity_t'][t] = local_vars['Buffer_T']
 
         ''' update volume using the ion amounts and the initial amounts and store '''
-        V[t] = (parameters['V_t0']*(ions_t[t, 0]+ions_t[t,1]+ions_t[t,3] + abs(parameters['X_amount'])))/parameters['Sum_initial_amounts']
+        V_t[t] = (parameters['V_t0']*(ions_t[t, 0]+ions_t[t,1]+ions_t[t,3] + abs(parameters['X_amount'])))/parameters['Sum_initial_amounts']
 
-    ions_t_concen = ions_t/ (V[t] *1000)
+    ions_t_concen = ions_t/ (V_t[t] *1000)
 
 
 
     ''' Package output of simulation into results dictionary / some understandable datastructure that is useful for downstream plotting/processing/etc.'''
-    # results = {'external_ions_concentrations': {}, 'fluxes': fluxes, 'deps': deps}
 
-    # Option 1
-
-    # results['externaexternal_ions_concentrationsl_ions'] = {'amounts': ions_t, 'concentrations': ions_t_concen}
-    # results['fluxes'] = flux_history_dictionary / flux_history_array
-    # results['fluxes'] = dependency_history_dictionary / dependency_history_array
-
-    # Option 2
-    # results['external_ions_concentrations'] = {'Na': {'amounts': ions_t[Na_idx,:], 'concentrations': ions_t_concen[Na_idx,:]}, 
-    #                             "H": {'amounts': ions_t[H_idx,:], 'concentrations': ions_t_concen[H_idx,:]}, 
-    #                             "Cl": {'amounts': ions_t[Cl_idx,:], 'concentrations': ions_t_concen[Cl_idx,:]}, 
-    #                             "K": {'amounts': ions_t[K_idx,:], 'concentrations': ions_t_concen[K_idx,:]}
-    #                             }
-
-    
+    results = {}
+    results['internal_ions'] = {'Na': {'amounts': ions_t[Na_idx,:], 'concentrations': ions_t_concen[Na_idx,:]}, 
+                                "H": {'amounts': ions_t[H_idx,:], 'concentrations': ions_t_concen[H_idx,:]}, 
+                                "Cl": {'amounts': ions_t[Cl_idx,:], 'concentrations': ions_t_concen[Cl_idx,:]}, 
+                                "K": {'amounts': ions_t[K_idx,:], 'concentrations': ions_t_concen[K_idx,:]}
+                                }
+    results['fluxes'] = {'Cl': {'ASOR': flux_history_dictionary['ClC_ASOR'], 'CLC': flux_history_dictionary['ClC_CLC']},
+                        'Na': {'TPC': flux_history_dictionary['Na_TPC'], 'NHE':  flux_history_dictionary['Na_NHE']},
+                        'H': {'CLC': flux_history_dictionary['H_Cl'], 'NHE': flux_history_dictionary['H_NHE'], 'vATPase':  flux_history_dictionary['H_vATPase'], 'H_leak': flux_history_dictionary['H_leak']},
+                        'K': {'K': flux_history_dictionary['K']}
+                        }
+    results['other_variables'] = {'dependencies': {'pH_ASOR': dependency_histories['pH_ASOR'], 'v_ASOR': dependency_histories['v_ASOR'], 'pH_CLC': dependency_histories['pH_CLC'], 'v_CLC': dependency_histories['v_CLC'], 't_vATPase': dependency_histories['t_vATPase']},
+                                  'vesicle_parameters': {'pH': dependency_histories['pH_t'], 'V': V_t[t], 'A':  dependency_histories['A_t'], 'C': dependency_histories['C_t'], 'buffer_capacity': dependency_histories['buffer_capacity_t']}  
+                                }
 
     return results
 

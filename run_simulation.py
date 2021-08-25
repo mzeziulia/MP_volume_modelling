@@ -15,13 +15,13 @@ from utilities import simulation_tools as simtools
 # user_inputs = parse_user_inputs()
 
 G={}
-G['ASOR'] = input("G ASOR")
-G['TPC'] = input("G TPC")
-G['K'] = input("G K")
-G['CLC'] = input("G CLC")
-G['NHE'] = input("G NHE")
-G['vATPase'] = input("G vATPase")
-G['H_leak'] = input("G H_leak")
+G['ASOR'] = float(input("G ASOR"))
+G['TPC'] = float(input("G TPC"))
+G['K'] = float(input("G K"))
+G['CLC'] = float(input("G CLC"))
+G['NHE'] = float(input("G NHE"))
+G['vATPase'] = float(input("G vATPase"))
+G['H_leak'] = float(input("G H_leak"))
 
  #### FROM CONFIG FILE - WILL IT WORK?
 parameters = {

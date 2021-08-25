@@ -1,7 +1,7 @@
 import numpy as np
 from utilities import nernst_potentials as P
 from utilities import ionic_fluxes as i_flux
-from utilities import dep_functions as F
+from utilities import dep_functions as dep_funct
 from config import *
 
 
@@ -11,10 +11,10 @@ def compute_flows(time_step,
     G,
     external_ions_concentrations,
     A_from_V_const,
-    X_amount = None,
-    buffer_capacity_T0 = None, 
-    V_t0 = None, 
-    c_spec = None, 
+    X_amount,
+    buffer_capacity_T0, 
+    V_t0, 
+    c_spec, 
     RT = 2578.5871, 
     F = 96485.0
 ): # I CHANGED HERE - HAVE A LOOK
@@ -62,7 +62,7 @@ def compute_flows(time_step,
 
     '''
 
-    dIons_dt = np.zeros_like(internal_ions)
+    dIons_dt = np.empty(internal_ions.shape[0])
 
     Buffer_T=buffer_capacity_T0*(V/V_t0) # Buffer capacity at the current time step
     htotal_i = internal_ions[H_idx]/(V*1000) # Concentration (mol/l) of H (total) in MP from the amount (mol) 
@@ -89,18 +89,18 @@ def compute_flows(time_step,
     n_potential_Na_TPC = P.nernst_potential_Na_K(U, external_ions_concentrations[Na_idx], na_i, RTdivF)
     potential_nhe = P.potential_NHE(external_ions_concentrations[Na_idx], na_i, hfree_i, hfree_o)
     potential_k= P.nernst_potential_Na_K(U, external_ions_concentrations[K_idx], k_i, RTdivF)
-    potential_Cl_OH= P.nernst_potential_Cl_OH(external_ions_concentrations[Cl_idx], cl_i, hfree_i, hfree_o)
     potential_VATPase= P.nernst_potential_VATPase(U, hfree_o, hfree_i, RTdivF)
     potential_H_leak = P.nernst_potential_H_leak(U, hfree_o, hfree_i, RTdivF)
 
     # Flow of chloride (d[Cl]/dt)
-    Cl_flux_asor = i_flux.J_cl_asor(potential_asor, G['asor'], U, pH_local, A)
+    Cl_flux_asor = i_flux.J_cl_asor(potential_asor, G['ASOR'], U, pH_local, A)
     Cl_flux_CLC = i_flux.J_Cl_CLC(potential_CLC, G['CLC'], U, pH_local, A )
 
     dIons_dt[0] = Cl_flux_asor + Cl_flux_CLC
 
+
     # Flow of sodium (d[Na]/dt)
-    na_flux_tpc = i_flux.J_na_tpc(n_potential_Na_TPC, G['tpc'], A)
+    na_flux_tpc = i_flux.J_na_tpc(n_potential_Na_TPC, G['TPC'], A)
     na_flux_nhe = i_flux.J_Na_NHE(potential_nhe, G['NHE'], A)
 
     dIons_dt[1] = na_flux_tpc + na_flux_nhe
@@ -108,23 +108,23 @@ def compute_flows(time_step,
     # Flow of protons (d[H]/dt)
     H_flux_CLC = i_flux.J_H_CLC(potential_CLC, G['CLC'], U, pH_local, A)
     H_flux_NHE = i_flux.J_H_NHE(potential_nhe,G['NHE'],A)
-    H_flux_VATPase = i_flux.J_VATPase(potential_VATPase, G['ATPase'], time_step, A)
+    H_flux_VATPase = i_flux.J_VATPase(potential_VATPase, G['vATPase'], time_step, A)
     H_flux_leak    = i_flux.J_H_leak(potential_H_leak, G['H_leak'], A)
 
     dIons_dt[2] = H_flux_CLC + H_flux_NHE + H_flux_VATPase + H_flux_leak
 
     # calculate flow of K (d[K]/dt)
-    K_flux = i_flux.J_k(potential_k, G['g_k'], A)
+    K_flux = i_flux.J_k(potential_k, G['K'], A)
 
     dIons_dt[3] = K_flux
     
-    pH_dep_ASOR= F.pH_dependence_ASOR(pH_local)
-    v_dep_ASOR= F.v_dependence_ASOR(U)
+    pH_dep_ASOR= dep_funct.pH_dependence_ASOR(pH_local)
+    v_dep_ASOR= dep_funct.v_dependence_ASOR(U)
     
-    pH_dep_ClC = F.pH_dependence_ClC(pH_local)
-    v_dep_ClC  = F.v_dependence_ClC(U)
+    pH_dep_ClC = dep_funct.pH_dependence_ClC(pH_local)
+    v_dep_ClC  = dep_funct.v_dependence_ClC(U)
 
-    t_dep_VATPase = F.g_VATP_dependence(time_step)
+    t_dep_VATPase = dep_funct.g_VATP_dependence(time_step)
 
     fluxes = {'Cl_asor': Cl_flux_asor,
             'Cl_CLC': Cl_flux_CLC,
@@ -232,11 +232,11 @@ def run_simulation(initial_state_ions_amounts, parameters):
                             'buffer_capacity_t': np.zeros(len(time_axis))
                             }
 
-    dependency_histories['pH_ASOR'][0] = F.pH_dependence_ASOR(parameters['pH_i'])
-    dependency_histories['v_ASOR'][0] = F.v_dependence_ClC(parameters['U0'])
-    dependency_histories['pH_CLC'][0] = F.pH_dependence_ClC(parameters['pH_i'])
-    dependency_histories['v_CLC'][0] = F.v_dependence_ClC(parameters['U0'])
-    dependency_histories['t_vATPase'][0] = F.g_VATP_dependence(time_axis[0])
+    dependency_histories['pH_ASOR'][0] = dep_funct.pH_dependence_ASOR(parameters['pH_i'])
+    dependency_histories['v_ASOR'][0] = dep_funct.v_dependence_ClC(parameters['U0'])
+    dependency_histories['pH_CLC'][0] = dep_funct.pH_dependence_ClC(parameters['pH_i'])
+    dependency_histories['v_CLC'][0] = dep_funct.v_dependence_ClC(parameters['U0'])
+    dependency_histories['t_vATPase'][0] = dep_funct.g_VATP_dependence(time_axis[0])
     dependency_histories['pH_t'][0] = parameters['pH_i']
     dependency_histories['A_t'][0] = parameters['A0']
     dependency_histories['C_t'][0] = parameters['C0']
@@ -245,7 +245,7 @@ def run_simulation(initial_state_ions_amounts, parameters):
     for t in range(1,len(time_axis)):
 
         ''' Compute the flows and local variables to store at this timestep''' 
-        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[t-1, :], V_t[t-1], **parameters)
+        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[t-1, :], V_t[t-1], parameters['G'], parameters['external_ions_concentrations'], parameters['A_from_V_const'], parameters['X_amount'], parameters['buffer_capacity_t0'], parameters['V_t0'], parameters['c_spec'])
 
         ''' update the ion amounts using the flows and store '''
         ions_t[t,:] = update_euler(ions_t[t-1,:], dt, dIons_dt)

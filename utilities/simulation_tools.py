@@ -12,12 +12,14 @@ def compute_flows(time_step,
     external_ions_concentrations,
     A_from_V_const,
     X_amount,
-    buffer_capacity_T0, 
+    buffer_capacity_T0,
     V_t0, 
     c_spec, 
     RT = 2578.5871, 
-    F = 96485.0
-): # I CHANGED HERE - HAVE A LOOK
+    F = 96485.0,
+    alpha = 3.0,
+    pH_offset = 5.4
+): 
     '''
     Arguments
     =============
@@ -83,6 +85,7 @@ def compute_flows(time_step,
 
     RTdivF = RT / F
 
+   
     # Nernst potentials computed for different channels
     potential_asor = P.nernst_potential_Cl_asor(U, external_ions_concentrations[Cl_idx], cl_i, RTdivF)
     potential_CLC = P.nernst_potential_CLC(U, cl_i, external_ions_concentrations[Cl_idx], hfree_i, hfree_o, RT, F)
@@ -117,7 +120,7 @@ def compute_flows(time_step,
 
     dIons_dt[3] = K_flux
     
-    pH_dep_ASOR= dep_funct.pH_dependence_ASOR(pH_local)
+    pH_dep_ASOR= dep_funct.pH_dependence_ASOR(pH_local, alpha = alpha, pH_offset = pH_offset)
     v_dep_ASOR= dep_funct.v_dependence_ASOR(U)
     
     pH_dep_ClC = dep_funct.pH_dependence_ClC(pH_local)
@@ -184,7 +187,10 @@ def run_simulation(initial_state_ions_amounts, parameters):
                 - Gas constant x Temperature 
             `F` [float]:
                 - Faraday's constant 
-
+            `alpha` [float]:
+                - exponential scaling parameter of the ASOR pH dependence 
+            `pH_offset` [float]:
+                - pH1/2 of ASOR activation
     Returns
     =======
     `results` [dict]:
@@ -206,7 +212,7 @@ def run_simulation(initial_state_ions_amounts, parameters):
     ions_t = np.empty((4, len(time_axis)))
     ions_t[:,0] = initial_state_ions_amounts
 
-    V_t = np.empty((1, len(time_axis)))
+    V_t = np.empty( len(time_axis) )
     V_t[0] = V0
 
     flux_history_dictionary = {'ClC_ASOR': np.zeros(len(time_axis)-1),
@@ -231,7 +237,7 @@ def run_simulation(initial_state_ions_amounts, parameters):
                             'buffer_capacity_t': np.zeros(len(time_axis))
                             }
 
-    dependency_histories['pH_ASOR'][0] = dep_funct.pH_dependence_ASOR(parameters['pH_i'])
+    dependency_histories['pH_ASOR'][0] = dep_funct.pH_dependence_ASOR(parameters['pH_i'], alpha = parameters['alpha'], pH_offset = parameters['pH_offset'])
     dependency_histories['v_ASOR'][0] = dep_funct.v_dependence_ClC(parameters['U0'])
     dependency_histories['pH_CLC'][0] = dep_funct.pH_dependence_ClC(parameters['pH_i'])
     dependency_histories['v_CLC'][0] = dep_funct.v_dependence_ClC(parameters['U0'])
@@ -241,13 +247,25 @@ def run_simulation(initial_state_ions_amounts, parameters):
     dependency_histories['C_t'][0] = parameters['C0']
     dependency_histories['buffer_capacity_t'][0] = parameters['buffer_capacity_t0']
 
+    G = parameters['G']
+    ext_ion = parameters['external_ions_concentrations']
+    A_from_V_const = parameters['A_from_V_const']
+    X_amount = parameters['X_amount']
+    buffer_capacity_t0 = parameters['buffer_capacity_t0']
+    V_t0 = parameters['V_t0']
+    c_spec = parameters['c_spec']
+    RT = parameters['RT']
+    F = parameters['F']
+    alpha = parameters['alpha']
+    pH_offset = parameters['pH_offset']
+
     for t in range(1,len(time_axis)):
 
         ''' Compute the flows and local variables to store at this timestep''' 
-        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[t-1, :], V_t[t-1], parameters['G'], parameters['external_ions_concentrations'], parameters['A_from_V_const'], parameters['X_amount'], parameters['buffer_capacity_t0'], parameters['V_t0'], parameters['c_spec'])
+        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[:, t-1], V_t[t-1], G, ext_ion, A_from_V_const, X_amount, buffer_capacity_t0, V_t0, c_spec, alpha = alpha, pH_offset = pH_offset)
 
         ''' update the ion amounts using the flows and store '''
-        ions_t[t,:] = update_euler(ions_t[t-1,:], dt, dIons_dt)
+        ions_t[:,t] = update_euler(ions_t[:,t-1], dt, dIons_dt)
 
         ''' store other relevant variables in history array '''
         flux_history_dictionary['ClC_ASOR'][t-1] = fluxes['Cl_asor']
@@ -271,11 +289,9 @@ def run_simulation(initial_state_ions_amounts, parameters):
         dependency_histories['buffer_capacity_t'][t] = local_vars['Buffer_T']
 
         ''' update volume using the ion amounts and the initial amounts and store '''
-        V_t[t] = (parameters['V_t0']*(ions_t[t, 0]+ions_t[t,1]+ions_t[t,3] + abs(parameters['X_amount'])))/parameters['Sum_initial_amounts']
+        V_t[t] = (parameters['V_t0']*(ions_t[0, t]+ions_t[1,t]+ions_t[3,t] + abs(parameters['X_amount'])))/parameters['Sum_initial_amounts']
 
     ions_t_concen = ions_t/ (V_t[t] *1000)
-
-
 
     ''' Package output of simulation into results dictionary / some understandable datastructure that is useful for downstream plotting/processing/etc.'''
 

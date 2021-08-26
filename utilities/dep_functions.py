@@ -10,13 +10,14 @@ import numpy as np
    f(U) = 1 / (1 + e(k2*(U-U1/2))
 '''   
 
-# wild-type ASOR pH dependency function 
-def pH_dependence_ASOR(pH):
-    return 1.0 / (1.0 + np.exp(3.0*(pH-5.4)))
+# ASOR pH dependency function 
 
-# # ASOR alkaline shifted mutant pH dependency function
-# def pH_dependence_ASOR(pH):
-#     return 1.0 / (1.0 + np.exp(1.0*(pH-7.4)))
+def pH_dependence_ASOR(pH, alpha = 3.0, pH_offset = 5.4):
+    """
+    When simulating wild-type ASOR pH dependency function, alpha = 3.0, pH_offset = 5.4
+    When simulating ASOR alkaline shifted mutant pH dependency function channel, alpha = 1.0, pH_offset = 7.4
+    """
+    return 1.0 / (1.0 + np.exp(alpha*(pH-pH_offset)))
 
 # ASOR voltage dependency function
 def v_dependence_ASOR(U, k2=80, U_half = -40*1e-3):

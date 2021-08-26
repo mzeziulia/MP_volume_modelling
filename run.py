@@ -1,25 +1,15 @@
-from config import dt, T, external_ions_concentrations, A_from_V_const, X_amount, buffer_capacity_t0, V0, c_spec, pH_i, U0, A0, C0, Sum_initial_amounts, internal_ions_amounts
+from config import dt, T, A_from_V_const, buffer_capacity_t0, V0, c_spec, pH_i, U0, A0, C0, initialize_internal_concentrations
 import matplotlib.pyplot as plt
 import numpy as np
 
-from utilities import dep_functions as F
-from utilities import ionic_fluxes as i_flux
-from utilities import nernst_potentials as potentials
 from utilities import simulation_tools as simtools
+from utilities import parse_user_input
 # from plotting import display_simulation_results
 
-# user_inputs = parse_user_inputs()
+G, ASOR_args, Cl_i_concentration = parse_user_input()
 
-G={}
-G['ASOR'] = float(input("G ASOR"))
-G['TPC'] = float(input("G TPC"))
-G['K'] = float(input("G K"))
-G['CLC'] = float(input("G CLC"))
-G['NHE'] = float(input("G NHE"))
-G['vATPase'] = float(input("G vATPase"))
-G['H_leak'] = float(input("G H_leak"))
+X_amount, external_ions_concentrations, internal_ions_amounts, internal_ions_concentrations, Sum_initial_amounts = initialize_internal_concentrations(Cl_i_concentration)
 
- #### FROM CONFIG FILE - WILL IT WORK?
 parameters = {
     'dt': dt,
     'T': T,
@@ -36,7 +26,9 @@ parameters = {
     'U0': U0,
     'A0': A0,
     'C0': C0,
-    'Sum_initial_amounts': Sum_initial_amounts
+    'Sum_initial_amounts': Sum_initial_amounts,
+    'alpha': ASOR_args['alpha'],
+    'pH_offset': ASOR_args['pH_offset']
    }
 
 

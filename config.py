@@ -24,9 +24,6 @@ A_from_V_const=(36.0*np.pi)**(1/3) # constant necessary for calculation surface 
 C0 = A0 * c_spec # inititial membrane capacitance
 
 Cl_o_concentration = 20*1e-3 # external Cl concentraion in M
-Cl_i_concentration= 159*1e-3 # internal Cl concentraion in M
-# Cl_i_concentration=1*1e-3 # absent internal Cl
-# Cl_i_concentration= 9*1e-3 # Cl replacement condition (internal Cl concentration in M)
 
 Na_o_concentration=10*1e-3 # external Na concentraion in M
 Na_i_concentration=150*1e-3 # internal Na concentraion in M
@@ -45,12 +42,22 @@ htotal_i_concentration = hfree_i_concentration/ buffer_capacity_t0 # concentrati
 
 htotal_i_amount = htotal_i_concentration*V0*1000 # amount of total internal protons in moles
 
-Q0=U0*C0 # initial total charge
-X_amount=(Q0/F)-((Na_i_concentration+K_i_concentration+htotal_i_concentration-Cl_i_concentration)*V0*1000) # initial amount of unaccouted ions in moles
-X_concentration=X_amount/(V0*1000) # initial concentration of unaccounted ions in moles
+def initialize_internal_concentrations(Cl_i_concentration = 159*1e-3):
+   
+    # Cl_i_concentration= 159*1e-3 # internal Cl concentraion in M
+    # Cl_i_concentration=1*1e-3 # absent internal Cl concentration in M
+    # Cl_i_concentration= 9*1e-3 # Cl replacement condition (internal Cl concentration in M)
 
-internal_ions_amounts=[Cl_i_concentration*V0*1000,  Na_i_concentration*V0*1000, htotal_i_concentration*V0*1000, K_i_concentration*V0*1000] # vector of amounts of ions in moles
-external_ions_concentrations = [Cl_o_concentration, Na_o_concentration, htotal_o_concentration, K_o_concentration] # vector of concentrations of external ions
-internal_ions_concentrations = [Cl_i_concentration, Na_i_concentration, htotal_i_concentration, K_i_concentration] # vector of concentrations of internal ions
+    Q0=U0*C0 # initial total charge
+    X_amount=(Q0/F)-((Na_i_concentration+K_i_concentration+htotal_i_concentration-Cl_i_concentration)*V0*1000) # initial amount of unaccouted ions in moles
+    X_concentration=X_amount/(V0*1000) # initial concentration of unaccounted ions in moles
 
-Sum_initial_amounts = internal_ions_amounts[Cl_idx] + internal_ions_amounts[Na_idx] + abs(X_amount) + internal_ions_amounts[K_idx] # sum of amounts of all ions
+    internal_ions_amounts=[Cl_i_concentration*V0*1000,  Na_i_concentration*V0*1000, htotal_i_concentration*V0*1000, K_i_concentration*V0*1000] # vector of amounts of ions in moles
+    external_ions_concentrations = [Cl_o_concentration, Na_o_concentration, htotal_o_concentration, K_o_concentration] # vector of concentrations of external ions
+    internal_ions_concentrations = [Cl_i_concentration, Na_i_concentration, htotal_i_concentration, K_i_concentration] # vector of concentrations of internal ions
+
+    Sum_initial_amounts = internal_ions_amounts[Cl_idx] + internal_ions_amounts[Na_idx] + abs(X_amount) + internal_ions_amounts[K_idx] # sum of amounts of all ions
+
+    return X_amount, external_ions_concentrations, internal_ions_amounts, internal_ions_concentrations, Sum_initial_amounts
+
+

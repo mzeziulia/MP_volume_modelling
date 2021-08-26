@@ -8,10 +8,6 @@ from utilities import nernst_potentials as potentials
 from utilities import simulation_tools as simtools
 # from plotting import display_simulation_results
 
-
-# Have to do something with G
-# 
-
 # user_inputs = parse_user_inputs()
 
 G={}

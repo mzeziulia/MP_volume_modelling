@@ -98,7 +98,6 @@ def compute_flows(time_step,
 
     dIons_dt[0] = Cl_flux_asor + Cl_flux_CLC
 
-
     # Flow of sodium (d[Na]/dt)
     na_flux_tpc = i_flux.J_na_tpc(n_potential_Na_TPC, G['TPC'], A)
     na_flux_nhe = i_flux.J_Na_NHE(potential_nhe, G['NHE'], A)

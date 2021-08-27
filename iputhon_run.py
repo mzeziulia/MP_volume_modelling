@@ -2,6 +2,7 @@ from config import dt, T, A_from_V_const, buffer_capacity_t0, V0, c_spec, pH_i, 
 import matplotlib.pyplot as plt
 import numpy as np
 import plotting as plot
+import plot_functional_dependences as plot_dep
 
 from utilities import simulation_tools as simtools
 
@@ -69,6 +70,7 @@ parameters = {
 results = simtools.run_simulation(internal_ions_amounts, parameters) # I removed ** in front of parameters
 
 figure = plot.figure_plottting(results)
+figure_dependency = plot_dep.plot_dependency()
 
 # results['concentrations']['Cl']
 # results['volumes']['Cl']

@@ -12,7 +12,7 @@ import numpy as np
 
 # ASOR pH dependency function 
 
-def pH_dependence_ASOR(pH, alpha = 3.0, pH_offset = 5.4):
+def pH_dependence_ASOR(pH, alpha=3.0, pH_offset=5.4):
     """
     When simulating wild-type ASOR pH dependency function, alpha = 3.0, pH_offset = 5.4
     When simulating ASOR alkaline shifted mutant pH dependency function channel, alpha = 1.0, pH_offset = 7.4

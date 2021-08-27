@@ -1,7 +1,5 @@
 import argparse
 
-
-
 G_asor = 8*1e-5
 G_tpc = 2*1e-6
 G_k = 0.0
@@ -17,7 +15,6 @@ def parse_user_input():
     """
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--fff", help="a dummy argument to fool ipython", default="1")
 
     parser.add_argument('--gasor', '-as', type = float,
                 help = "Conductance of ASOR channel",

@@ -1,17 +1,28 @@
 from config import dt, T, A_from_V_const, buffer_capacity_t0, V0, c_spec, pH_i, U0, A0, C0, initialize_internal_concentrations
 import matplotlib.pyplot as plt
 import numpy as np
+import plotting as plot
 
 from utilities import simulation_tools as simtools
 
+# G = {}
+# G['ASOR'] = float(input('G_ASOR'))
+# G['TPC'] = float(input('G_TPC'))
+# G['K'] = float(input('G_K'))
+# G['CLC'] = float(input('G_CLC'))
+# G['NHE'] = float(input('G_NHE'))
+# G['vATPase'] = float(input('G_vATPase'))
+# G['H_leak'] = float(input('G_H_leak'))
+
 G = {}
-G['ASOR'] = float(input('G_ASOR'))
-G['TPC'] = float(input('G_TPC'))
+G['ASOR'] = float(input('G_ASOR 10**(-5)'))*1e-5
+G['TPC'] = float(input('G_TPC 10**(-6)'))*1e-6
 G['K'] = float(input('G_K'))
-G['CLC'] = float(input('G_CLC'))
+G['CLC'] = float(input('G_CLC 10**(-8)'))*1e-8
 G['NHE'] = float(input('G_NHE'))
-G['vATPase'] = float(input('G_vATPase'))
-G['H_leak'] = float(input('G_H_leak'))
+G['vATPase'] = float(input('G_vATPase 10**(-9)'))*1e-9
+G['H_leak'] = float(input('G_H_leak 10**(-9)'))*1e-9
+
 
 ASOR_args = {}
 choice_dep_fuct = input ('ASOR pH-dependency: WT (wt) or pH-shifted mutant (mt)')
@@ -56,6 +67,8 @@ parameters = {
 
 
 results = simtools.run_simulation(internal_ions_amounts, parameters) # I removed ** in front of parameters
+
+figure = plot.figure_plottting(results)
 
 # results['concentrations']['Cl']
 # results['volumes']['Cl']

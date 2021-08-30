@@ -15,10 +15,10 @@ def figure_plottting (result):
     matplotlib.rcParams['font.sans-serif'] = "Arial"
     matplotlib.rcParams['font.family'] = "Arial"
 
-    axes[0,0].plot(t_axis, result['other_variables']['vesicle_parameters']['pH'],color=u'#348ABD', linewidth=0.6)
+    axes[0,0].plot(t_axis, result['other_variables']['vesicle_parameters']['pH'],color=u'#348ABD', linewidth=1)
     axes[0,0].set_title('pH', fontsize=20, pad=20)
     # axes[0,0].set_ylim(4.0,7.5)
-    axes[0,0].set_ylim(5.0,7.5)
+    axes[0,0].set_ylim(4.5,8.5)
     axes[0,0].set_xlim(0,1000)
     axes[0,0].spines['right'].set_visible(False)
     axes[0,0].spines['top'].set_visible(False)
@@ -29,7 +29,7 @@ def figure_plottting (result):
     axes[0,0].set_ylabel('pH', fontname="Arial", fontsize =24)
     axes[0,0].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
-    axes[0,1].plot(t_axis, result['other_variables']['vesicle_parameters']['V']*1e18, color=u'#348ABD', linewidth=0.6)
+    axes[0,1].plot(t_axis, result['other_variables']['vesicle_parameters']['V']*1e18, color=u'#348ABD', linewidth=1)
     axes[0,1].set_title('Volume', fontsize=20, pad=20)
     # axes[0,1].set_ylim(0.0,10.0)
     axes[0,1].set_ylim(1.0,10.0)
@@ -44,10 +44,10 @@ def figure_plottting (result):
     axes[0,1].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
 
-    axes[0,2].plot(t_axis,result['other_variables']['vesicle_parameters']['U']*1000, color=u'#348ABD', linewidth=0.6)
+    axes[0,2].plot(t_axis,result['other_variables']['vesicle_parameters']['U']*1000, color=u'#348ABD', linewidth=1)
     axes[0,2].set_title('Membrane potential', fontsize=20, pad=20)
-    # axes[0,2].set_ylim(-90.0,60.0)
-    axes[0,2].set_ylim(-80.0,40.0)
+    axes[0,2].set_ylim(-90.0,60.0)
+    # axes[0,2].set_ylim(-80.0,40.0)
     axes[0,2].set_xlim(0,1000)
     axes[0,2].spines['right'].set_visible(False)
     axes[0,2].spines['top'].set_visible(False)
@@ -58,9 +58,9 @@ def figure_plottting (result):
     axes[0,2].set_ylabel('mV', fontname="Arial", fontsize =24)
     axes[0,2].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
-    axes[1,0].plot(t_axis2,result['fluxes']['Cl']['ASOR']*1e18, color=u'#348ABD', linewidth=0.6)
+    axes[1,0].plot(t_axis2,result['fluxes']['Cl']['ASOR']*1e18, color=u'#348ABD', linewidth=1)
     axes[1,0].set_title('Cl$^{-}$ flux through ASOR', fontsize=20)
-    axes[1,0].set_ylim(-2.0,0.0)
+    # axes[1,0].set_ylim(-2.0,0.0)
     axes[1,0].set_xlim(0,T)
     axes[1,0].spines['right'].set_visible(False)
     axes[1,0].spines['top'].set_visible(False)
@@ -71,9 +71,9 @@ def figure_plottting (result):
     axes[1,0].set_ylabel('mol*s$^{-1}$, $10^{-18}$', fontname="Arial", fontsize =24)
     axes[1,0].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
-    axes[1,1].plot(t_axis2,result['fluxes']['Cl']['CLC']*1e19, color=u'#348ABD', linewidth=0.6)
+    axes[1,1].plot(t_axis2,result['fluxes']['Cl']['CLC']*1e19, color=u'#348ABD', linewidth=1)
     axes[1,1].set_title('Cl$^{-}$ flux through CLC', fontsize=20)
-    axes[1,1].set_ylim(-3.5,0.1)
+    # axes[1,1].set_ylim(-3.5,0.1)
     axes[1,1].set_xlim(0,T)
     axes[1,1].spines['right'].set_visible(False)
     axes[1,1].spines['top'].set_visible(False)
@@ -84,9 +84,9 @@ def figure_plottting (result):
     axes[1,1].set_ylabel('mol*s$^{-1}$, $10^{-19}$', fontname="Arial", fontsize =24)
     axes[1,1].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
-    axes[1,2].plot(t_axis2,result['fluxes']['H']['CLC']*1e19, color=u'#348ABD', linewidth=0.6)
+    axes[1,2].plot(t_axis2,result['fluxes']['H']['CLC']*1e19, color=u'#348ABD', linewidth=1)
     axes[1,2].set_title('H$^{+}$ flux through CLC', fontsize=20)
-    axes[1,2].set_ylim(-0.1,1.5)
+    # axes[1,2].set_ylim(-0.1,1.5)
     axes[1,2].set_xlim(0,T)
     axes[1,2].spines['right'].set_visible(False)
     axes[1,2].spines['top'].set_visible(False)
@@ -97,9 +97,9 @@ def figure_plottting (result):
     axes[1,2].set_ylabel('mol*s$^{-1}$, $10^{-19}$', fontname="Arial", fontsize =24)
     axes[1,2].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
-    axes[2,0].plot(t_axis2,result['fluxes']['Na']['TPC']*1e18, color=u'#348ABD', linewidth=0.6)
+    axes[2,0].plot(t_axis2,result['fluxes']['Na']['TPC']*1e18, color=u'#348ABD', linewidth=1)
     axes[2,0].set_title('Na$^{+}$ flux through TPC', fontsize=20)
-    axes[2,0].set_ylim(-5,0)
+    # axes[2,0].set_ylim(-5,0)
     axes[2,0].set_xlim(0,T)
     axes[2,0].spines['right'].set_visible(False)
     axes[2,0].spines['top'].set_visible(False)
@@ -110,9 +110,9 @@ def figure_plottting (result):
     axes[2,0].set_ylabel('mol*s$^{-1}$, $10^{-18}$', fontname="Arial", fontsize =24)
     axes[2,0].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
-    axes[2,1].plot(t_axis2,result['fluxes']['H']['vATPase']*1e20, color=u'#348ABD', linewidth=0.6)
+    axes[2,1].plot(t_axis2,result['fluxes']['H']['vATPase']*1e20, color=u'#348ABD', linewidth=1)
     axes[2,1].set_title('H$^{+}$ flux through V-ATPase', fontsize=20, pad=20)
-    axes[2,1].set_ylim(-0.1,3)
+    # axes[2,1].set_ylim(-0.1,3)
     axes[2,1].set_xlim(0,1000)
     axes[2,1].spines['right'].set_visible(False)
     axes[2,1].spines['top'].set_visible(False)
@@ -123,9 +123,9 @@ def figure_plottting (result):
     axes[2,1].set_ylabel('mol*s$^{-1}$, $10^{-20}$', fontname="Arial", fontsize =24)
     axes[2,1].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
-    axes[2,2].plot(t_axis2,result['fluxes']['H']['H_leak']*1e20, color=u'#348ABD', linewidth=0.6)
+    axes[2,2].plot(t_axis2,result['fluxes']['H']['H_leak']*1e20, color=u'#348ABD', linewidth=1)
     axes[2,2].set_title('H$^{+}$ flux through H-leak', fontsize=20, pad=20)
-    axes[2,2].set_ylim(-2,3)
+    # axes[2,2].set_ylim(-2,3)
     axes[2,2].set_xlim(0,1000)
     axes[2,2].spines['right'].set_visible(False)
     axes[2,2].spines['top'].set_visible(False)

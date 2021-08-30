@@ -37,9 +37,15 @@ def parse_user_input():
     parser.add_argument('--ghleak', '-hlk', type = float,
                 help = "Conductance of H_leak channel",
                 dest = "H_leak", default=G_H_leak)
-    parser.add_argument("--wt_vs_mutant", "-wtmt", type = str,
-                help = "Type of ASOR channel: wildtype (wt) vs. mutant (mt)", choices=['wt', 'mt'],
-                dest = "wt_vs_mutant", default="wt")
+    parser.add_argument("--ASOR_wt_vs_mutant_vs_none", "-wtmt", type = str,
+                help = "Type of ASOR channel: wildtype (wt) vs. mutant (mt)", choices=['wt', 'mt', 'none'],
+                dest = "ASOR_pH_dep", default="wt")
+    parser.add_argument("--ASOR_U_dep", "-audep", type = str,
+                help = "ASOR voltage dependency: wildtype (yes) vs. absent (no)", choices=['yes', 'no'],
+                dest = "ASOR_U_dep", default="yes")
+    parser.add_argument("--CLC_dep", "-cdep", type = str,
+                help = "CLC voltage and pH dependency: present (yes) vs. absent (no)", choices=['yes', 'no'],
+                dest = "CLC_dep", default="yes")
     parser.add_argument("--Cli_concentration", "-cli", type = str,
                 help = "Initial internal cloride concentration high, low, zero",
                 choices = ['high', 'low', 'zero'],
@@ -57,12 +63,34 @@ def parse_user_input():
     G['H_leak'] = arg_dictionary.H_leak
 
     ASOR_args = {}
-    if arg_dictionary.wt_vs_mutant == 'wt':
-        ASOR_args['alpha'] = 3.0
-        ASOR_args['pH_offset'] = 5.4
-    elif arg_dictionary.wt_vs_mutant == 'mt':
-        ASOR_args['alpha'] = 1.0
-        ASOR_args['pH_offset'] = 7.4
+    if arg_dictionary.ASOR_pH_dep == 'wt':
+        ASOR_args['ASOR_pH_k2'] = 3.0
+        ASOR_args['ASOR_pH_half'] = 5.4
+    elif arg_dictionary.ASOR_pH_dep == 'mt':
+        ASOR_args['ASOR_pH_k2'] = 1.0
+        ASOR_args['ASOR_pH_half'] = 7.4
+    elif arg_dictionary.ASOR_pH_dep == 'none':
+        ASOR_args['ASOR_pH_k2'] = 0.0
+        ASOR_args['ASOR_pH_half'] = 0.0
+
+    if arg_dictionary.ASOR_U_dep == 'yes':
+        ASOR_args['ASOR_U_k2'] = 80.0
+        ASOR_args['ASOR_U_half'] = -40*1e-3
+    elif arg_dictionary.ASOR_U_dep == 'no':
+        ASOR_args['ASOR_U_k2'] = 0.0
+        ASOR_args['ASOR_U_half'] = 0.0
+
+    CLC_args = {}
+    if arg_dictionary.CLC_dep == 'yes':
+        CLC_args['CLC_pH_k2'] = 1.5
+        CLC_args['CLC_pH_half'] = 5.5
+        CLC_args['CLC_U_k2'] = 80.0
+        CLC_args['CLC_U_half'] = -40*1e-3
+    elif arg_dictionary.CLC_dep == 'no':
+        CLC_args['CLC_pH_k2'] = 0
+        CLC_args['CLC_pH_half'] = 0
+        CLC_args['CLC_U_k2'] = 0
+        CLC_args['CLC_U_half'] = 0
 
     if arg_dictionary.Cl_i == 'high':
         Cl_i_concentration = 159*1e-3
@@ -71,4 +99,4 @@ def parse_user_input():
     elif arg_dictionary.Cl_i == 'zero':
         Cl_i_concentration = 1*1e-3
 
-    return G, ASOR_args, Cl_i_concentration
+    return G, ASOR_args, CLC_args, Cl_i_concentration

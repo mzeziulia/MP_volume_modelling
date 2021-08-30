@@ -23,9 +23,9 @@ def plot_dependency ():
     pH = pH_start
     for i in range(len(pH_axis)):
         pH = pH + pH_step
-        pH_values_ASOR_wt[i] = dep_funct.pH_dependence_ASOR(pH, alpha=3.0, pH_offset=5.4)
+        pH_values_ASOR_wt[i] = dep_funct.pH_dependence_ASOR(pH)
         pH_values_ClC[i] = dep_funct.pH_dependence_ClC(pH)
-        pH_values_ASOR_mutant[i]=dep_funct.pH_dependence_ASOR(pH, alpha=1.0, pH_offset=7.4)
+        pH_values_ASOR_mutant[i]=dep_funct.pH_dependence_ASOR(pH, pH_k2=1.0, pH_half=7.4)
 
     for i in range(len(voltage_axis)):
         U_values_ASOR[i]=dep_funct.v_dependence_ASOR(voltage_axis[i])
@@ -36,7 +36,7 @@ def plot_dependency ():
     matplotlib.rcParams['font.family'] = "sans-serif"
 
 
-    axes[0,0].plot(pH_axis,pH_values_ClC, color=u'#348ABD', linewidth=0.6)
+    axes[0,0].plot(pH_axis,pH_values_ClC, color=u'#348ABD', linewidth=1)
     axes[0,0].set_title('ClC', fontsize=20, pad=25, fontname="Arial")
     axes[0,0].spines['right'].set_visible(False)
     axes[0,0].spines['top'].set_visible(False)
@@ -48,8 +48,8 @@ def plot_dependency ():
     axes[0,0].set_xlabel('pH', fontname="Arial", fontsize =18)
     axes[0,0].set_xticks(np.arange(2, 13, 2.0))
 
-    line,=axes[0,1].plot(pH_axis,pH_values_ASOR_wt, color=u'#348ABD', linewidth=0.6, label='ASOR wild-type')
-    line,=axes[0,1].plot(pH_axis,pH_values_ASOR_mutant, color=u'#E24A33', linewidth=0.6, label='pH-shifted ASOR mutant')
+    line,=axes[0,1].plot(pH_axis,pH_values_ASOR_wt, color=u'#348ABD', linewidth=1, label='ASOR wild-type')
+    line,=axes[0,1].plot(pH_axis,pH_values_ASOR_mutant, color=u'#E24A33', linewidth=1, label='pH-shifted ASOR mutant')
     axes[0,1].set_title('ASOR', fontsize=20, pad=25, fontname="Arial")
     axes[0,1].spines['right'].set_visible(False)
     axes[0,1].spines['top'].set_visible(False)
@@ -62,7 +62,7 @@ def plot_dependency ():
     axes[0,1].set_xticks(np.arange(2, 13, 2.0))
     axes[0,1].legend(loc=1, bbox_to_anchor=(0.8, 0.5, 0.5, 0.5), fontsize=14, frameon=False)
 
-    axes[1,0].plot(voltage_axis*1000,U_values_ClC, color=u'#348ABD', linewidth=0.6)
+    axes[1,0].plot(voltage_axis*1000,U_values_ClC, color=u'#348ABD', linewidth=1)
     # axes[1,0].set_title('ClC voltage-dependence', fontsize=20)
     axes[1,0].spines['right'].set_visible(False)
     axes[1,0].spines['top'].set_visible(False)
@@ -73,7 +73,7 @@ def plot_dependency ():
     axes[1,0].set_ylabel('Voltage', fontname="Arial", fontsize =24, labelpad=25)
     axes[1,0].set_xlabel('U, mV', fontname="Arial", fontsize =18)
 
-    axes[1,1].plot(voltage_axis*1000,U_values_ASOR, color=u'#348ABD', linewidth=0.6)
+    axes[1,1].plot(voltage_axis*1000,U_values_ASOR, color=u'#348ABD', linewidth=1)
     # axes[1,1].set_title('ASOR', fontsize=20)
     axes[1,1].spines['right'].set_visible(False)
     axes[1,1].spines['top'].set_visible(False)

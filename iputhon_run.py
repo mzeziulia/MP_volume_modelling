@@ -1,8 +1,8 @@
 from config import dt, T, A_from_V_const, buffer_capacity_t0, V0, c_spec, pH_i, U0, A0, C0, initialize_internal_concentrations
 import matplotlib.pyplot as plt
 import numpy as np
-import plotting as plot
-import plot_functional_dependences as plot_dep
+from plotting import display_simulation_results as plot
+from plotting import plot_functional_dependences as plot_dep
 
 from utilities import simulation_tools as simtools
 
@@ -25,14 +25,39 @@ G['vATPase'] = float(input('G_vATPase 10**(-9)'))*1e-9
 G['H_leak'] = float(input('G_H_leak 10**(-9)'))*1e-9
 
 
-ASOR_args = {}
-choice_dep_fuct = input ('ASOR pH-dependency: WT (wt) or pH-shifted mutant (mt)')
+ASOR_pH_args = {}
+choice_dep_fuct = input ('ASOR pH-dependency: WT (wt), pH-shifted mutant (mt) or none')
 if choice_dep_fuct == 'wt':
-    ASOR_args['alpha'] = 3.0
-    ASOR_args['pH_offset'] = 5.4
+    ASOR_pH_args['pH_k2'] = 3.0
+    ASOR_pH_args['pH_half'] = 5.4
 elif choice_dep_fuct == 'mt':
-    ASOR_args['alpha'] = 1.0
-    ASOR_args['pH_offset'] = 7.4
+    ASOR_pH_args['pH_k2'] = 1.0
+    ASOR_pH_args['pH_half'] = 7.4
+elif choice_dep_fuct == 'none':
+    ASOR_pH_args['pH_k2'] = 0.0
+    ASOR_pH_args['pH_half'] = 0.4
+
+ASOR_U_args = {}
+choice_dep_fuct = input ('ASOR V-dependency: yes or no')
+if choice_dep_fuct == 'yes':
+    ASOR_U_args['U_k2'] = 80 
+    ASOR_U_args['U_half'] = -40*1e-3
+elif choice_dep_fuct == 'no':
+    ASOR_U_args['U_k2'] = 0 
+    ASOR_U_args['U_half'] = 0
+
+CLC_args = {}
+choice_dep_fuct = input ('CLC pH- and V-dependency: yes or no')
+if choice_dep_fuct == 'yes':
+    CLC_args['U_k2'] = 80 
+    CLC_args['U_half'] = -40*1e-3
+    CLC_args['pH_k2'] = -1.5 
+    CLC_args['pH_half'] = 5.5
+elif choice_dep_fuct == 'no':
+    CLC_args['U_k2'] = 0 
+    CLC_args['U_half'] = 0
+    CLC_args['pH_k2'] = 0 
+    CLC_args['pH_half'] = 0
 
 choice_Cl_conc = input ('Initial internal Cl concentration: high, low or zero')
 if choice_Cl_conc == 'high':
@@ -62,8 +87,14 @@ parameters = {
     'A0': A0,
     'C0': C0,
     'Sum_initial_amounts': Sum_initial_amounts,
-    'alpha': ASOR_args['alpha'],
-    'pH_offset': ASOR_args['pH_offset']
+    'ASOR_pH_k2': ASOR_pH_args['pH_k2'],
+    'ASOR_pH_half': ASOR_pH_args['pH_half'],
+    'ASOR_U_k2': ASOR_U_args['U_k2'],
+    'ASOR_U_half': ASOR_U_args['U_half'],
+    'CLC_pH_k2': CLC_args['pH_k2'],
+    'CLC_pH_half': CLC_args['pH_half'],
+    'CLC_U_k2': CLC_args['U_k2'],
+    'CLC_U_half': CLC_args['U_half']
    }
 
 
@@ -71,8 +102,3 @@ results = simtools.run_simulation(internal_ions_amounts, parameters) # I removed
 
 figure = plot.figure_plottting(results)
 figure_dependency = plot_dep.plot_dependency()
-
-# results['concentrations']['Cl']
-# results['volumes']['Cl']
-
-# display_simulation_results(results)

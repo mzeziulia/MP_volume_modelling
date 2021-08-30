@@ -15,10 +15,16 @@ def compute_flows(time_step,
     buffer_capacity_T0,
     V_t0, 
     c_spec, 
+    ASOR_pH_k2, 
+    ASOR_pH_half,
+    ASOR_U_k2,
+    ASOR_U_half,
+    CLC_pH_k2,
+    CLC_pH_half,
+    CLC_U_k2,
+    CLC_U_half,
     RT = 2578.5871, 
     F = 96485.0,
-    alpha = 3.0,
-    pH_offset = 5.4
 ): 
     '''
     Arguments
@@ -46,6 +52,22 @@ def compute_flows(time_step,
         - membrane capacitance (in F/(m**2))
     `RTdivF` [float]:
         - RT / F
+    `ASOR_pH_k2` [float]:
+        - exponential scaling parameter of the ASOR pH dependence 
+    `ASOR_pH_half` [float]:
+        - pH1/2 of ASOR activation
+    `ASOR_U_k2` [float]:
+        - exponential scaling parameter of the ASOR voltage dependence 
+    `ASOR_U_half` [float]:
+        - U1/2 of ASOR activation
+    `CLC_pH_k2` [float]:
+        - exponential scaling parameter of the CLC pH dependence 
+    `CLC_pH_half` [float]:
+        - pH1/2 of CLC activation
+    `CLC_U_k2` [float]:
+        - exponential scaling parameter of the CLC voltage dependence 
+    `CLC_U_half` [float]:
+        - U1/2 of CLC activation
     `RT` [float]:
         - Gas constant x Temperature 
     `F` [float]:
@@ -85,7 +107,6 @@ def compute_flows(time_step,
 
     RTdivF = RT / F
 
-   
     # Nernst potentials computed for different channels
     potential_asor = P.nernst_potential_Cl_asor(U, external_ions_concentrations[Cl_idx], cl_i, RTdivF)
     potential_CLC = P.nernst_potential_CLC(U, cl_i, external_ions_concentrations[Cl_idx], hfree_i, hfree_o, RT, F)
@@ -96,8 +117,8 @@ def compute_flows(time_step,
     potential_H_leak = P.nernst_potential_H_leak(U, hfree_o, hfree_i, RTdivF)
 
     # Flow of chloride (d[Cl]/dt)
-    Cl_flux_asor = i_flux.J_cl_asor(potential_asor, G['ASOR'], U, pH_local, A, alpha, pH_offset)
-    Cl_flux_CLC = i_flux.J_Cl_CLC(potential_CLC, G['CLC'], U, pH_local, A )
+    Cl_flux_asor = i_flux.J_cl_asor(potential_asor, G['ASOR'], U, pH_local, A, ASOR_pH_k2, ASOR_pH_half, ASOR_U_k2, ASOR_U_half)
+    Cl_flux_CLC = i_flux.J_Cl_CLC(potential_CLC, G['CLC'], U, pH_local, A, CLC_pH_k2, CLC_pH_half, CLC_U_k2, CLC_U_half)
 
     dIons_dt[Cl_idx] = Cl_flux_asor + Cl_flux_CLC
 
@@ -108,7 +129,7 @@ def compute_flows(time_step,
     dIons_dt[Na_idx] = na_flux_tpc + na_flux_nhe
 
     # Flow of protons (d[H]/dt)
-    H_flux_CLC = i_flux.J_H_CLC(potential_CLC, G['CLC'], U, pH_local, A)
+    H_flux_CLC = i_flux.J_H_CLC(potential_CLC, G['CLC'], U, pH_local, A, CLC_pH_k2, CLC_pH_half, CLC_U_k2, CLC_U_half)
     H_flux_NHE = i_flux.J_H_NHE(potential_nhe,G['NHE'],A)
     H_flux_VATPase = i_flux.J_VATPase(potential_VATPase, G['vATPase'], time_step, A)
     H_flux_leak    = i_flux.J_H_leak(potential_H_leak, G['H_leak'], A)
@@ -120,11 +141,11 @@ def compute_flows(time_step,
 
     dIons_dt[K_idx] = K_flux
     
-    pH_dep_ASOR= dep_funct.pH_dependence_ASOR(pH_local, alpha = alpha, pH_offset = pH_offset)
-    v_dep_ASOR= dep_funct.v_dependence_ASOR(U)
+    pH_dep_ASOR= dep_funct.pH_dependence_ASOR(pH_local, pH_k2 = ASOR_pH_k2, pH_half = ASOR_pH_half)
+    v_dep_ASOR= dep_funct.v_dependence_ASOR(U, U_k2 = ASOR_U_k2, U_half = ASOR_U_half)
     
-    pH_dep_ClC = dep_funct.pH_dependence_ClC(pH_local)
-    v_dep_ClC  = dep_funct.v_dependence_ClC(U)
+    pH_dep_ClC = dep_funct.pH_dependence_ClC(pH_local, pH_k2 = CLC_pH_k2, pH_half = CLC_pH_half)
+    v_dep_ClC  = dep_funct.v_dependence_ClC(U, U_k2 = CLC_U_k2, U_half = CLC_U_half)
 
     t_dep_VATPase = dep_funct.g_VATP_dependence(time_step)
 
@@ -188,10 +209,24 @@ def run_simulation(initial_state_ions_amounts, parameters):
                 - Gas constant x Temperature 
             `F` [float]:
                 - Faraday's constant 
-            `alpha` [float]:
+            `ASOR_pH_k2` [float]:
                 - exponential scaling parameter of the ASOR pH dependence 
-            `pH_offset` [float]:
+            `ASOR_pH_half` [float]:
                 - pH1/2 of ASOR activation
+            `ASOR_U_k2` [float]:
+                - exponential scaling parameter of the ASOR voltage dependence 
+            `ASOR_U_half` [float]:
+                - U1/2 of ASOR activation
+            `CLC_pH_k2` [float]:
+                - exponential scaling parameter of the CLC pH dependence 
+            `CLC_pH_half` [float]:
+                - pH1/2 of CLC activation
+            `CLC_U_k2` [float]:
+                - exponential scaling parameter of the CLC voltage dependence 
+            `CLC_U_half` [float]:
+                - U1/2 of CLC activation
+
+
     Returns
     =======
     `results` [dict]:
@@ -239,10 +274,10 @@ def run_simulation(initial_state_ions_amounts, parameters):
                             'U': np.zeros(len(time_axis))
                             }
 
-    dependency_histories['pH_ASOR'][0] = dep_funct.pH_dependence_ASOR(parameters['pH_i'], alpha = parameters['alpha'], pH_offset = parameters['pH_offset'])
-    dependency_histories['v_ASOR'][0] = dep_funct.v_dependence_ClC(parameters['U0'])
-    dependency_histories['pH_CLC'][0] = dep_funct.pH_dependence_ClC(parameters['pH_i'])
-    dependency_histories['v_CLC'][0] = dep_funct.v_dependence_ClC(parameters['U0'])
+    dependency_histories['pH_ASOR'][0] = dep_funct.pH_dependence_ASOR(parameters['pH_i'], pH_k2 = parameters['ASOR_pH_k2'], pH_half = parameters['ASOR_pH_half'])
+    dependency_histories['v_ASOR'][0] = dep_funct.v_dependence_ASOR(parameters['U0'], U_k2 = parameters['ASOR_U_k2'], U_half = parameters['ASOR_U_half'])
+    dependency_histories['pH_CLC'][0] = dep_funct.pH_dependence_ClC(parameters['pH_i'], pH_k2 = parameters['CLC_pH_k2'], pH_half = parameters['CLC_pH_half'])
+    dependency_histories['v_CLC'][0] = dep_funct.v_dependence_ClC(parameters['U0'], U_k2 = parameters['CLC_U_k2'], U_half = parameters['CLC_U_half'])
     dependency_histories['t_vATPase'][0] = dep_funct.g_VATP_dependence(time_axis[0])
     dependency_histories['pH_t'][0] = parameters['pH_i']
     dependency_histories['A_t'][0] = parameters['A0']
@@ -259,13 +294,11 @@ def run_simulation(initial_state_ions_amounts, parameters):
     c_spec = parameters['c_spec']
     RT = parameters['RT']
     F = parameters['F']
-    alpha = parameters['alpha']
-    pH_offset = parameters['pH_offset']
 
     for t in range(1,len(time_axis)):
 
         ''' Compute the flows and local variables to store at this timestep''' 
-        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[:, t-1], V_t[t-1], G, ext_ion, A_from_V_const, X_amount, buffer_capacity_t0, V_t0, c_spec, alpha = alpha, pH_offset = pH_offset)
+        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[:, t-1], V_t[t-1], G, ext_ion, A_from_V_const, X_amount, buffer_capacity_t0, V_t0, c_spec, parameters['ASOR_pH_k2'], parameters['ASOR_pH_half'], parameters['ASOR_U_k2'], parameters['ASOR_U_half'], parameters['CLC_pH_k2'], parameters['CLC_pH_half'], parameters['CLC_U_k2'], parameters['CLC_pH_half'])
 
         ''' update the ion amounts using the flows and store '''
         ions_t[:,t] = update_euler(ions_t[:,t-1], dt, dIons_dt)
@@ -315,11 +348,5 @@ def run_simulation(initial_state_ions_amounts, parameters):
                                 }
 
     return results
-
-
-
-    # ions = results['external_ions_concentrations']
-
-    # plt.plot(ions['Na']['concentrations'][:500])
 
 

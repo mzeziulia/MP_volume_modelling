@@ -1,4 +1,3 @@
-from iputhon_run import CLC_args
 from config import dt, T, A_from_V_const, buffer_capacity_t0, V0, c_spec, pH_i, U0, A0, C0, initialize_internal_concentrations
 import matplotlib.pyplot as plt
 import numpy as np

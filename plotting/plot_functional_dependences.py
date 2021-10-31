@@ -85,3 +85,5 @@ def plot_dependency ():
     axes[1,1].set_xlabel('U, mV', fontname="Arial", fontsize =18)
 
     plt.subplots_adjust(wspace=None, hspace=0.35)
+
+    plt.show()

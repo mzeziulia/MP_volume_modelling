@@ -136,5 +136,6 @@ def figure_plottting (result):
     axes[2,2].set_ylabel('mol*s$^{-1}$, $10^{-20}$', fontname="Arial", fontsize =24)
     axes[2,2].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
+    plt.show()
 
     # plt.savefig(os.path.join('SM5f ASOR+TPC+ClC+H-leak low Cl.svg'), transparent=True)

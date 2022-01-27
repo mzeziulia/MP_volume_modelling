@@ -298,7 +298,7 @@ def run_simulation(initial_state_ions_amounts, parameters):
     for t in range(1,len(time_axis)):
 
         ''' Compute the flows and local variables to store at this timestep''' 
-        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[:, t-1], V_t[t-1], G, ext_ion, A_from_V_const, X_amount, buffer_capacity_t0, V_t0, c_spec, parameters['ASOR_pH_k2'], parameters['ASOR_pH_half'], parameters['ASOR_U_k2'], parameters['ASOR_U_half'], parameters['CLC_pH_k2'], parameters['CLC_pH_half'], parameters['CLC_U_k2'], parameters['CLC_pH_half'])
+        dIons_dt, fluxes, deps, local_vars = compute_flows(time_axis[t], ions_t[:, t-1], V_t[t-1], G, ext_ion, A_from_V_const, X_amount, buffer_capacity_t0, V_t0, c_spec, parameters['ASOR_pH_k2'], parameters['ASOR_pH_half'], parameters['ASOR_U_k2'], parameters['ASOR_U_half'], parameters['CLC_pH_k2'], parameters['CLC_pH_half'], parameters['CLC_U_k2'], parameters['CLC_U_half'])
 
         ''' update the ion amounts using the flows and store '''
         ions_t[:,t] = update_euler(ions_t[:,t-1], dt, dIons_dt)

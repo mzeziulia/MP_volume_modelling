@@ -51,7 +51,7 @@ choice_dep_fuct = input ('CLC pH- and V-dependency: yes or no')
 if choice_dep_fuct == 'yes':
     CLC_args['U_k2'] = 80 
     CLC_args['U_half'] = -40*1e-3
-    CLC_args['pH_k2'] = -1.5 
+    CLC_args['pH_k2'] = 1.5 
     CLC_args['pH_half'] = 5.5
 elif choice_dep_fuct == 'no':
     CLC_args['U_k2'] = 0 

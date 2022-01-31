@@ -52,7 +52,7 @@ If you are running the code from the command line, if no input was provided from
 - ASOR pH-dependency [--ASOR_wt_vs_mutant_vs_none] [-wtmt]: wt
 - ASOR voltage-dependency [--ASOR_U_dep] [-audep]: yes
 - CLC pH- and voltage-dependency [--CLC_dep] [-cdep]: yes
-- Initial internal Cl concentration ["--Cli_concentration] [-cli]: 'high'
+- Initial internal Cl concentration [--Cli_concentration] [-cli]: 'high'
 
 
 If you are running the code from IPython kernel, you have to set all parameters from the keyboard. In case of g values, if the indicated value in the manuscript states 2 * 10<sup>-6</sup>, and the window states '10**-6', please input 2; but is the window states '10**-7', please input 20. 

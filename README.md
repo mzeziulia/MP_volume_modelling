@@ -42,17 +42,17 @@ Parameters that are requested and could be defined from a keyboard:
 
 If you are running the code from the command line, if no input was provided from a keyboard, default parameters will be used:
 
-- g_asor = 8 * 10<sup>-5
-- g_tpc = 2 * 10<sup>-6
-- g_k = 0.0
-- g_CLC = 10 * 10<sup>-8
-- g_NHE = 0.0
-- g_VATPase = 8 * 10<sup>-9
-- g_H_leak = 16 * 10<sup>-9
-- ASOR pH-dependency: wt
-- ASOR voltage-dependency: yes
-- CLC pH- and voltage-dependency: yes
-- Initial internal Cl concentration: 'high'
+- g_asor [--gasor] [-as] = 8 * 10<sup>-5
+- g_tpc [--gtpc] [-tpc]  = 2 * 10<sup>-6
+- g_k [--gk] [-k] = 0.0
+- g_CLC [--gclc] [-clc] = 10 * 10<sup>-8
+- g_NHE [--gnhe] [-nhe] = 0.0
+- g_VATPase [--gvatpase] [-atp] = 8 * 10<sup>-9
+- g_H_leak [--ghleak] [-hlk] = 16 * 10<sup>-9
+- ASOR pH-dependency [--ASOR_wt_vs_mutant_vs_none] [-wtmt]: wt
+- ASOR voltage-dependency [--ASOR_U_dep] [-audep]: yes
+- CLC pH- and voltage-dependency [--CLC_dep] [-cdep]: yes
+- Initial internal Cl concentration ["--Cli_concentration] [-cli]: 'high'
 
 
 If you are running the code from IPython kernel, you have to set all parameters from the keyboard. In case of g values, if the indicated value in the manuscript states 2 * 10<sup>-6</sup>, and the window states '10**-6', please input 2; but is the window states '10**-7', please input 20. 

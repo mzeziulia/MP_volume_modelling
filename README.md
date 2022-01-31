@@ -55,17 +55,17 @@ If you are running the code from the command line, if no input was provided from
 - Initial internal Cl concentration: 'high'
 
 
-If you are running the code from IPython kernel, you have to set all parameters from the keyboard. In case of g values, if the indicated value in the manuscript states 1*10<sup>-6, the window will state 10**-6, please input 1.
+If you are running the code from IPython kernel, you have to set all parameters from the keyboard. In case of g values, if the indicated value in the manuscript states 1*10<sup>-6</sup>, the window will state 10**-6, please input 1.
 
 ## List of parameters used to generate figures
 
 ### Supplementary figure 14
 
 - a) g_CLC = 4*10<sup>-6
-- b) g_ASOR = 4*10<sup>-6, g_CLC = 4*10<sup>-6
-- c) g_TPC = 1*10<sup>-6, g_CLC = 4*10<sup>-6
-- d) g_ASOR = 4*10<sup>-6, g_TPC = 1*10<sup>-6, g_CLC = 4*10<sup>-6
-- e) g_ASOR = 4*10<sup>-6, g_TPC = 1*10<sup>-6
+- b) g_ASOR = 4*10<sup>-6 , g_CLC = 4*10<sup>-6
+- c) g_TPC = 1*10<sup>-6 , g_CLC = 4*10<sup>-6
+- d) g_ASOR = 4*10<sup>-6 , g_TPC = 1*10<sup>-6 , g_CLC = 4*10<sup>-6
+- e) g_ASOR = 4*10<sup>-6 , g_TPC = 1*10<sup>-6
 no pH- and voltage-dependency for ASOR and CLC
 Initial ClC concentration is set to either 'high' or to 'zero'
 

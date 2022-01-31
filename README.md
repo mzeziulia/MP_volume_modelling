@@ -55,24 +55,26 @@ If you are running the code from the command line, if no input was provided from
 - Initial internal Cl concentration: 'high'
 
 
-If you are running the code from IPython kernel, you have to set all parameters from the keyboard. In case of g values, if the indicated value in the manuscript states 2 * 10<sup>-6</sup>, and the window states 10**-6, please input 2; but is the window states 10**-7, please input 20. 
+If you are running the code from IPython kernel, you have to set all parameters from the keyboard. In case of g values, if the indicated value in the manuscript states 2 * 10<sup>-6</sup>, and the window states '10**-6', please input 2; but is the window states '10**-7', please input 20. 
 
 ## List of parameters used to generate figures
 
 ### Supplementary figure 14
 
-- a) g_CLC = 4 * 10<sup>-6
-- b) g_ASOR = 4 * 10<sup>-6</sup>, g_CLC = 4 * 10<sup>-6
-- c) g_TPC = 1 * 10<sup>-6</sup>, g_CLC = 4 * 10<sup>-6
-- d) g_ASOR = 4 * 10<sup>-6</sup>, g_TPC = 1 * 10<sup>-6</sup>, g_CLC = 4 * 10<sup>-6
-- e) g_ASOR = 4 * 10<sup>-6</sup>, g_TPC = 1 * 10<sup>-6
+a) g_CLC = 4 * 10<sup>-6</sup>
+b) g_ASOR = 4 * 10<sup>-6</sup>, g_CLC = 4 * 10<sup>-6</sup>
+c) g_TPC = 1 * 10<sup>-6</sup>, g_CLC = 4 * 10<sup>-6</sup>
+d) g_ASOR = 4 * 10<sup>-6</sup>, g_TPC = 1 * 10<sup>-6</sup>, g_CLC = 4 * 10<sup>-6</sup>
+e) g_ASOR = 4 * 10<sup>-6</sup>, g_TPC = 1 * 10<sup>-6</sup>
+
 no pH- and voltage-dependency for ASOR and CLC
+
 Initial ClC concentration is set to either 'high' or to 'zero'
 
 ### Supplementary figure 15
 
-f(pH) = 1 / (1 + e<sup>(k<sub>1</sub> * (pH - pH<sub>1/2</sub>)))
-f(U) = 1 / (1 + e<sup>(k<sub>2</sub> * (U - U<sub>1/2</sub>)))
+f(pH) = 1 / (1 + e<sup>(k<sub>1</sub> * (pH - pH<sub>1/2</sub>))</sup>)
+f(U) = 1 / (1 + e<sup>(k<sub>2</sub> * (U - U<sub>1/2</sub>))</sup>)
 
 WT ASOR pH-dependency: k<sub>1</sub> = 3, pH<sub>1/2</sub> = 5.4
 pH-shifted mutant ASOR pH-dependency: k<sub>1</sub> = 1, pH<sub>1/2</sub> = 7.4
@@ -82,23 +84,27 @@ ASOR and CLC voltage dependency: k<sub>2</sub> = 80, U<sub>1/2</sub> = -40
 
 ### Supplementary figure 16
 
-- a) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_vATPase = 8 * 10<sup>-9</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
-- b) g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_vATPase = 8 * 10<sup>-9</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
-- c) g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
-- d) g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>
-- e) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_vATPase = 8 * 10<sup>-9</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
-- f) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
-- g) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_vATPase = 8 * 10<sup>-9</sup>
-- h) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>
-- i) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_vATPase = 8 * 10<sup>-9</sup>
-- j) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
-- k) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>
+a) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_vATPase = 8 * 10<sup>-9</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
+b) g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_vATPase = 8 * 10<sup>-9</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
+c) g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
+d) g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>
+e) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_vATPase = 8 * 10<sup>-9</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
+f) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
+g) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>, g_vATPase = 8 * 10<sup>-9</sup>
+h) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_CLC = 1 * 10<sup>-7</sup>
+i) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_vATPase = 8 * 10<sup>-9</sup>
+j) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>, g_Hleak = 1.6 * 10<sup>-8</sup>
+k) g_ASOR = 8 * 10<sup>-5</sup>, g_TPC = 2 * 10<sup>-6</sup>
 
 Wild-type pH- and voltage-dependency for ASOR and CLC
+
 Initial ClC concentration is set to either 'high' or to 'low'
 
 ### Supplementary figure 17
 
 a) g_ASOR = 4 * 10<sup>-5</sup>, g_ASOR(5x) = 2 * 10<sup>-4</sup>, g_TPC = 1 * 10<sup>-6</sup>, g_CLC = 5 * 10<sup>-8</sup>, g_vATPase = 4 * 10<sup>-9</sup>
 
+Wild-type pH- and voltage-dependency for ASOR and CLC
+
+Initial ClC concentration is set to 'high'
  

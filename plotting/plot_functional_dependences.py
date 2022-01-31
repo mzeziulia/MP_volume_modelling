@@ -44,7 +44,7 @@ def plot_dependency ():
     axes[0,0].spines['left'].set_linewidth(0.4)
     axes[0,0].spines['left'].set_position(('outward', 5))
     axes[0,0].tick_params(axis='both', which='major', labelsize=16, width=0.1)
-    axes[0,0].set_ylabel('pH', fontname="Arial", fontsize =24, labelpad=25)
+    axes[0,0].set_ylabel('pH-dependency function', fontname="Arial", fontsize =24, labelpad=25)
     axes[0,0].set_xlabel('pH', fontname="Arial", fontsize =18)
     axes[0,0].set_xticks(np.arange(2, 13, 2.0))
 
@@ -70,7 +70,7 @@ def plot_dependency ():
     axes[1,0].spines['left'].set_linewidth(0.4)
     axes[1,0].spines['left'].set_position(('outward', 5))
     axes[1,0].tick_params(axis='both', which='major', labelsize=16, width=0.1)
-    axes[1,0].set_ylabel('Voltage', fontname="Arial", fontsize =24, labelpad=25)
+    axes[1,0].set_ylabel('U-dependency function', fontname="Arial", fontsize =24, labelpad=25)
     axes[1,0].set_xlabel('U, mV', fontname="Arial", fontsize =18)
 
     axes[1,1].plot(voltage_axis*1000,U_values_ASOR, color=u'#348ABD', linewidth=1)

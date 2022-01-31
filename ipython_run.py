@@ -35,7 +35,7 @@ elif choice_dep_fuct == 'mt':
     ASOR_pH_args['pH_half'] = 7.4
 elif choice_dep_fuct == 'none':
     ASOR_pH_args['pH_k2'] = 0.0
-    ASOR_pH_args['pH_half'] = 0.4
+    ASOR_pH_args['pH_half'] = 0.0
 
 ASOR_U_args = {}
 choice_dep_fuct = input ('ASOR V-dependency: yes or no')
@@ -98,7 +98,7 @@ parameters = {
    }
 
 
-results = simtools.run_simulation(internal_ions_amounts, parameters) # I removed ** in front of parameters
+results = simtools.run_simulation(internal_ions_amounts, parameters)
 
 figure = plot.figure_plottting(results)
 figure_dependency = plot_dep.plot_dependency()

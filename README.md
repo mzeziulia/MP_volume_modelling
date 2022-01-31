@@ -1,4 +1,4 @@
-# Macropinosome shrinkage mathematical model paper repo
+# Mathematical model of macropinosome shrinkage repo
 
 Companion repository for "Proton-gated anion transport governs endocytic vacuole shrinkage" by Mariia Zeziulia, Sandy Blin, Franziska W. Schmitt, Martin Lehmann, Thomas J. Jentsch
 
@@ -27,27 +27,27 @@ If you want to run this from the command line you can also specify particular pa
 
 Parameters that are requested and could be defined from a keyboard:
 
-- g_ASOR
+* g_ASOR
 
-- g_TPC
+* g_TPC
 
-- g_K (in all simulations is set to 0)
+* g_K (in all simulations is set to 0)
 
-- g_CLC
+* g_CLC
 
-- g_NHE (in all simulations is set to 0)
+* g_NHE (in all simulations is set to 0)
 
-- g_vATPase
+* g_vATPase
 
-- g_H-leak
+* g_H-leak
 
-- ASOR pH-dependency could be chosen between wild-type (wt), pH-shifted mutant (mt) or without pH-dependency (none)
+* ASOR pH-dependency could be chosen between wild-type (wt), pH-shifted mutant (mt) or without pH-dependency (none)
 
-- Choice if ASOR has voltage-dependency: yes/no
+* Choice if ASOR has voltage-dependency: yes/no
 
-- Choice if CLC has pH- or voltage-dependency: yes/no
+* Choice if CLC has pH- or voltage-dependency: yes/no
 
-- Initial internal Cl concentration: 'high' = 159mM, 'low' = 9mM, 'zero' = 1mM
+* Initial internal Cl concentration: 'high' = 159mM, 'low' = 9mM, 'zero' = 1mM
 
 If you are running the code from the command line, if no input was provided from a keyboard, default parameters will be used:
 

@@ -10,7 +10,7 @@ def figure_plottting (result):
     #ax.set_xticklabels(fontsize = 10, rotation = 0)
     t_axis2=np.arange(0,T-dt,dt)
     t_axis = np.arange(0, T, dt)
-    fig,axes = plt.subplots(3,3, figsize = (15, 15), sharex = True)
+    fig,axes = plt.subplots(3,3, figsize = (15, 15), sharex = False)
     plt.subplots_adjust(wspace=0.55, hspace=0.6)
     matplotlib.rcParams['font.sans-serif'] = "Arial"
     matplotlib.rcParams['font.family'] = "Arial"
@@ -25,7 +25,7 @@ def figure_plottting (result):
     axes[0,0].spines['bottom'].set_linewidth(0.4)
     axes[0,0].spines['left'].set_linewidth(0.4)
     axes[0,0].spines['left'].set_position(('outward', 5))
-    axes[0,0].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[0,0].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[0,0].set_ylabel('pH', fontname="Arial", fontsize =24)
     axes[0,0].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -39,7 +39,7 @@ def figure_plottting (result):
     axes[0,1].spines['bottom'].set_linewidth(0.4)
     axes[0,1].spines['left'].set_linewidth(0.4)
     axes[0,1].spines['left'].set_position(('outward', 5))
-    axes[0,1].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[0,1].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[0,1].set_ylabel(' $\mathregular{µm^3}$', fontname="Arial", fontsize =24)
     axes[0,1].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -54,7 +54,7 @@ def figure_plottting (result):
     axes[0,2].spines['bottom'].set_linewidth(0.4)
     axes[0,2].spines['left'].set_linewidth(0.4)
     axes[0,2].spines['left'].set_position(('outward', 5))
-    axes[0,2].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[0,2].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[0,2].set_ylabel('mV', fontname="Arial", fontsize =24)
     axes[0,2].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -67,7 +67,7 @@ def figure_plottting (result):
     axes[1,0].spines['bottom'].set_linewidth(0.4)
     axes[1,0].spines['left'].set_linewidth(0.4)
     axes[1,0].spines['left'].set_position(('outward', 5))
-    axes[1,0].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[1,0].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[1,0].set_ylabel('mol*s$^{-1}$, $10^{-18}$', fontname="Arial", fontsize =24)
     axes[1,0].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -80,7 +80,7 @@ def figure_plottting (result):
     axes[1,1].spines['bottom'].set_linewidth(0.4)
     axes[1,1].spines['left'].set_linewidth(0.4)
     axes[1,1].spines['left'].set_position(('outward', 5))
-    axes[1,1].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[1,1].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[1,1].set_ylabel('mol*s$^{-1}$, $10^{-19}$', fontname="Arial", fontsize =24)
     axes[1,1].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -93,7 +93,7 @@ def figure_plottting (result):
     axes[1,2].spines['bottom'].set_linewidth(0.4)
     axes[1,2].spines['left'].set_linewidth(0.4)
     axes[1,2].spines['left'].set_position(('outward', 5))
-    axes[1,2].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[1,2].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[1,2].set_ylabel('mol*s$^{-1}$, $10^{-19}$', fontname="Arial", fontsize =24)
     axes[1,2].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -106,7 +106,7 @@ def figure_plottting (result):
     axes[2,0].spines['bottom'].set_linewidth(0.4)
     axes[2,0].spines['left'].set_linewidth(0.4)
     axes[2,0].spines['left'].set_position(('outward', 5))
-    axes[2,0].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[2,0].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[2,0].set_ylabel('mol*s$^{-1}$, $10^{-18}$', fontname="Arial", fontsize =24)
     axes[2,0].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -119,7 +119,7 @@ def figure_plottting (result):
     axes[2,1].spines['bottom'].set_linewidth(0.4)
     axes[2,1].spines['left'].set_linewidth(0.4)
     axes[2,1].spines['left'].set_position(('outward', 5))
-    axes[2,1].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[2,1].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[2,1].set_ylabel('mol*s$^{-1}$, $10^{-20}$', fontname="Arial", fontsize =24)
     axes[2,1].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
@@ -132,7 +132,7 @@ def figure_plottting (result):
     axes[2,2].spines['bottom'].set_linewidth(0.4)
     axes[2,2].spines['left'].set_linewidth(0.4)
     axes[2,2].spines['left'].set_position(('outward', 5))
-    axes[2,2].tick_params(axis='both', which='major', labelsize=16, width=0.1)
+    axes[2,2].tick_params(axis='both', which='major', labelsize=16, width=0.2)
     axes[2,2].set_ylabel('mol*s$^{-1}$, $10^{-20}$', fontname="Arial", fontsize =24)
     axes[2,2].set_xlabel('Time, s', fontname="Arial", fontsize =24)
 
